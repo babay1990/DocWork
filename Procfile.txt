@@ -1,1 +1,1 @@
-web: java -jar target/DocWork-1.0.jar
+web: java -jar target/docWork-1.0.jar

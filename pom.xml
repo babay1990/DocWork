@@ -11,7 +11,7 @@
 	<groupId>com.shpaginWork</groupId>
 	<artifactId>docWork</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>docWork</name>
 	<description>Demo project for Spring Boot</description>
 
