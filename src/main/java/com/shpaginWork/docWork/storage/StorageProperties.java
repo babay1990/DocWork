@@ -8,7 +8,7 @@ public class StorageProperties {
     /**
      * Folder location for storing files
      */
-    private String location = "D:/Spring/docWork/files";
+    private String location = "/files";
 
     public String getLocation() {
         return location;
