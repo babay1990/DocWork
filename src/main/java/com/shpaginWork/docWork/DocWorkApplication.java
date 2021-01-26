@@ -16,7 +16,6 @@ public class DocWorkApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DocWorkApplication.class, args);
 	}
-
 	@Bean
 	CommandLineRunner init(StorageService storageService) {
 		return (args) -> {
