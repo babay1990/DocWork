@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+<header>
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+        <h4 class="my-0 mr-md-auto font-weight-normal">DocWork</h4>
+        <nav class="my-2 my-md-0 mr-md-3">
+            <a class="p-2 text-dark" href="/">Новости</a>
+            <a class="p-2 text-dark" href="/lk">Личный кабинет</a>
+            <a class="p-2 text-dark" href="/registration">Регистрация</a>
+            <a class="p-2 text-dark" href="/login">Войти</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <h2>Новости</h2>
+    <br>
+
+
+
+
+    <div class="row mb-2">
+        <div th:each="el : ${block}" class="col-md-6">
+            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <h3 th:text="${el.title}"/>
+                    <div th:text="${el.autor_name}" class="mb-1 text-muted"/>
+                    <p th:text="${el.annotation}"/>
+                    <a th:href="'/details/' + ${el.id}">Детальнее</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</main>
+
+
+<footer class="my-5 pt-5 text-muted text-center text-small">
+    <hr>
+        <p>DocWork by Shpagin A.S.</p>
+        <p>
+            <a href="#">Back to top</a>
+        </p>
+</footer>
+</body>
+</html>

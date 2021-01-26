@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+<header>
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+        <h4 class="my-0 mr-md-auto font-weight-normal">DocWork</h4>
+        <nav class="my-2 my-md-0 mr-md-3">
+            <a class="p-2 text-dark" href="/">Новости</a>
+            <a class="p-2 text-dark" href="/lk">Личный кабинет</a>
+            <a class="p-2 text-dark" href="/registration">Регистрация</a>
+            <a class="p-2 text-dark" href="/login">Войти</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <h1>Список зарегестрированных пользователей</h1>
+    <br>
+
+    <div class="alert alert-info mt-2">
+        <a class="p-2 text-dark" href="/admin">Панель администратора</a>
+        <a class="p-2 text-dark" href="/adminUsers">Данные пользователей</a>
+        <a class="p-2 text-dark" href="/adminNews">Данные новостей</a>
+        <a class="p-2 text-dark" href="/adminSettings">Настройки</a>
+        <a class="p-2 text-dark" href="/test">ТЕСТ</a>
+    </div>
+    <br>
+
+
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Имя</th>
+            <th scope="col">Отчество</th>
+            <th scope="col">Фамилия</th>
+            <th scope="col">Подразделение</th>
+            <th scope="col">Логин</th>
+            <th scope="col">Пароль</th>
+            <th scope="col">Роль</th>
+            <th scope="col">Email</th>
+        </tr>
+        </thead>
+        <tbody th:each="el : ${block}">
+        <tr>
+
+            <td th:text="${el.id}"/>
+            <td th:text="${el.name}"/>
+            <td th:text="${el.patronymic}"/>
+            <td th:text="${el.surname}"/>
+            <td th:text="${el.department}"/>
+            <td th:text="${el.login}"/>
+            <td th:text="${el.password}"/>
+            <td th:text="${el.role}"/>
+            <td th:text="${el.email}"/>
+            <td>
+                <form action="?bar2" method="post">
+                    <button type="submit" name="login" th:value="${el.login}" >Удалить пользователя</button>
+                </form>
+            </td>
+
+            <td>
+                <form action="?bar" method="post">
+                    <button type="submit" name="login" th:value="${el.login}" >Назначить администратором</button>
+                </form>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+
+
+
+
+</main>
+
+
+<footer class="my-5 pt-5 text-muted text-center text-small">
+    <hr>
+    <p>DocWork by Shpagin A.S.</p>
+    <p>
+        <a href="#">Back to top</a>
+    </p>
+</footer>
+</body>
+</html>

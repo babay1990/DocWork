@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+<header>
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+        <h4 class="my-0 mr-md-auto font-weight-normal">DocWork</h4>
+        <nav class="my-2 my-md-0 mr-md-3">
+            <a class="p-2 text-dark" href="/">Новости</a>
+            <a class="p-2 text-dark" href="/lk">Личный кабинет</a>
+            <a class="p-2 text-dark" href="/registration">Регистрация</a>
+            <a class="p-2 text-dark" href="/login">Войти</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <div class="container mt-5" mb-5>
+        <h1>Регистрация</h1>
+        <form action="registration" method="post">
+            <input type="text" name="name" placeholder="Введите имя" class="form-control" required><br>
+            <input type="text" name="patronymic" placeholder="Введите отчество" class="form-control" required><br>
+            <input type="text" name="surname" placeholder="Введите фамилию" class="form-control" required><br>
+            <input type="text" name="department" placeholder="Введите подразделение" class="form-control" required><br>
+            <input type="text" name="login" placeholder="Введите логин" class="form-control" required><br>
+            <input type="text" name="password" placeholder="Введите пароль" class="form-control" required><br>
+            <input type="text" name="email" placeholder="Введите email" class="form-control" required><br>
+            <button type="submit">Зарегестрироваться</button>
+        </form>
+    </div>
+</main>
+
+
+<footer class="my-5 pt-5 text-muted text-center text-small">
+    <hr>
+    <p>DocWork by Shpagin A.S.</p>
+    <p>
+        <a href="#">Back to top</a>
+    </p>
+</footer>
+</body>
+</html>

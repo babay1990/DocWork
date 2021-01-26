@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+<header>
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+        <h4 class="my-0 mr-md-auto font-weight-normal">DocWork</h4>
+        <nav class="my-2 my-md-0 mr-md-3">
+            <a class="p-2 text-dark" href="/">Новости</a>
+            <a class="p-2 text-dark" href="/lk">Личный кабинет</a>
+            <a class="p-2 text-dark" href="/registration">Регистрация</a>
+            <a class="p-2 text-dark" href="/login">Войти</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <h1>Личный кабинет пользователя</h1>
+    <br>
+
+    <div class="alert alert-info mt-2">
+        <a class="p-2 text-dark" href="/lk">Мои данные</a>
+        <a class="p-2 text-dark" href="/sendMessage">Отправить сообщение</a>
+        <a class="p-2 text-dark" href="/inbox">Входящие</a>
+        <a class="p-2 text-dark" href="/sent">Исходящие</a>
+        <a class="p-2 text-dark" href="/addNews">Добавить новость</a>
+        <a class="p-2 text-dark" href="/lkUsers">Список пользователей</a>
+    </div>
+    <br>
+
+    <h3 class="my-0 mr-md-auto font-weight-normal">Введите данные для отправки сообщения</h3><br>
+
+    <div>
+        <form method="POST" enctype="multipart/form-data" action="/sendMessage">
+            <table>
+                <tr><input name="recipient" placeholder="Введите получателя" class="form-control"  list="cit" required/></tr><br>
+                <datalist id="cit">
+                    <option th:each="el : ${block}" th:value="${el.login}"/>
+                </datalist>
+                <tr><input type="text" name="content" placeholder="Содержание" class="form-control" required></tr><br>
+                <tr><td>Загрузите файл</td><td><input type="file" name="file" /></td></tr>
+                <td></td><td><input type="submit" value="Отправить сообщение" /></td>
+            </table>
+        </form>
+    </div>
+
+</main>
+
+
+<footer class="my-5 pt-5 text-muted text-center text-small">
+    <hr>
+    <p>DocWork by Shpagin A.S.</p>
+    <p>
+        <a href="#">Back to top</a>
+    </p>
+</footer>
+</body>
+</html>
