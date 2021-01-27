@@ -37,22 +37,6 @@
     <h3>Мои данные</h3>
     <div class="alert alert-info mt-2">
 
-        <div class="row mb-2">
-            <div>
-                <img th:src="${url}" alt="альтернативный текст" height="200" width="100">
-            </div>
-
-            <div>
-                <form method="POST" enctype="multipart/form-data" action="/lk">
-                    <table>
-                        <tr><td>Для загрузки фотографии выберите файл:</td></tr>
-                        <tr><td><input type="file" name="file" /></td></tr>
-                        <tr><td><input type="submit" value="Загрузить фотографию" /></td></tr>
-                    </table>
-                </form>
-            </div>
-        </div>
-
 
         <h3 th:text="'Ваш id - ' + ${user.id}"/>
         <h3 th:text="'Ваше имя - ' + ${user.name}"/>
