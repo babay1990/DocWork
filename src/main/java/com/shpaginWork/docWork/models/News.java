@@ -1,8 +1,6 @@
 package com.shpaginWork.docWork.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "news")
@@ -19,6 +17,7 @@ public class News {
     }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
     private String title, annotation, text, autor_login, autor_name;

@@ -6,6 +6,7 @@ import com.shpaginWork.docWork.models.Users;
 import com.shpaginWork.docWork.repo.DocsRepository;
 import com.shpaginWork.docWork.repo.NewsRepository;
 import com.shpaginWork.docWork.repo.UsersRepository;
+import com.shpaginWork.docWork.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +23,12 @@ import java.util.Date;
 @Controller
 public class LkController {
 
+    private final StorageService storageService;
 
+    @Autowired
+    public LkController(StorageService storageService) {
+        this.storageService = storageService;
+    }
 
     @Autowired
     UsersRepository usersRepository;
@@ -52,7 +58,7 @@ public class LkController {
     @PostMapping("/lk")
     public String avatar(@RequestParam("file") MultipartFile file) {
 
-
+        storageService.store(file);
 
 
         //Находим информацию об авторизованном пользователе
@@ -61,7 +67,7 @@ public class LkController {
         //Находим пользователя по логину и передаем на страницу всю информацию, передав объект user
         Users user = usersRepository.findByLogin(userDetails.getUsername());
 
-        String link = "http://localhost:8080/files/" + file.getOriginalFilename();
+        String link = System.getProperty("catalina.home")+ "/" + "files" + file.getOriginalFilename();
         user.setUrl(link);
         usersRepository.save(user);
 
@@ -86,7 +92,7 @@ public class LkController {
     @PostMapping("/sendMessage")
     public String send(@RequestParam("file") MultipartFile file, @RequestParam String recipient, @RequestParam String content) {
 
-
+        storageService.store(file);
 
 
         //Находим информацию об авторизованном пользователе
@@ -95,7 +101,7 @@ public class LkController {
         //Находим пользователя по логину и передаем на страницу всю информацию, передав объект user
         Users user = usersRepository.findByLogin(userDetails.getUsername());
 
-        String link = "http://localhost:8080/files/" + file.getOriginalFilename();
+        String link = System.getProperty("catalina.home")+ "/" + "files" + file.getOriginalFilename();
         Docs newDoc = new Docs(user.getLogin(), recipient, content, link, new Date());
         docsRepository.save(newDoc);
 

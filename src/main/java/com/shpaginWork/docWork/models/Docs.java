@@ -1,8 +1,6 @@
 package com.shpaginWork.docWork.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -20,6 +18,7 @@ public class Docs {
     }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
     private String sender, recipient, content, link;
