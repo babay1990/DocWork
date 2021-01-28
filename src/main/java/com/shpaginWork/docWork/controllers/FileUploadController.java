@@ -39,8 +39,9 @@ public class FileUploadController {
 
         return "uploadForm";
     }
+    
 
-    @GetMapping("/files/{filename:.+}")
+    @GetMapping("docwork.herokuapp.com/tmp/tomcat.42066.851669607331537684/files//{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
 
