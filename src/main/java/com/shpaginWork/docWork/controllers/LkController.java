@@ -68,7 +68,7 @@ public class LkController {
         //Находим пользователя по логину и передаем на страницу всю информацию, передав объект user
         Users user = usersRepository.findByLogin(userDetails.getUsername());
 
-        String link = System.getProperty("catalina.home")+ File.separator + "files" + File.separator + file.getOriginalFilename();
+        String link = System.getProperty("catalina.home") + File.separator + "files" + File.separator + file.getOriginalFilename();
         user.setUrl(link);
         usersRepository.save(user);
 
