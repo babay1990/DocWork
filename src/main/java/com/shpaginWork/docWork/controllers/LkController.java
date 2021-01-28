@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -67,7 +68,7 @@ public class LkController {
         //Находим пользователя по логину и передаем на страницу всю информацию, передав объект user
         Users user = usersRepository.findByLogin(userDetails.getUsername());
 
-        String link = System.getProperty("catalina.home")+ "/" + "files" + file.getOriginalFilename();
+        String link = System.getProperty("catalina.home")+ File.separator + "files" + File.separator + file.getOriginalFilename();
         user.setUrl(link);
         usersRepository.save(user);
 
@@ -101,7 +102,7 @@ public class LkController {
         //Находим пользователя по логину и передаем на страницу всю информацию, передав объект user
         Users user = usersRepository.findByLogin(userDetails.getUsername());
 
-        String link = System.getProperty("catalina.home")+ "/" + "files" + file.getOriginalFilename();
+        String link = System.getProperty("catalina.home")+ File.separator + "files" + File.separator + file.getOriginalFilename();
         Docs newDoc = new Docs(user.getLogin(), recipient, content, link, new Date());
         docsRepository.save(newDoc);
 

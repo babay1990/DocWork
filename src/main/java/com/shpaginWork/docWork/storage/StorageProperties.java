@@ -10,7 +10,7 @@ public class StorageProperties {
     /**
      * Folder location for storing files
      */
-    private String location = "C:/Users/user01/Desktop/проект/Spring/бэкап" + File.separator + "images";
+    private String location = System.getProperty("catalina.home")+ File.separator + "files";
 
     public String getLocation() {
         return location;
