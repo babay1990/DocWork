@@ -41,7 +41,7 @@
     <div th:each="doc : ${resul}" class="alert alert-info mt-2">
         <h3 th:text="${doc.sender}"/>
         <h4 th:text="${doc.content}"/>
-        <a th:href="${doc.link}" th:text="${doc.link}" />
+        <a th:href="${doc.link}" th:text="Сообщение" />
         <h4 th:text="${doc.date}"/>
     </div>
 

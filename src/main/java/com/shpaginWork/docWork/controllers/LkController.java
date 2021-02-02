@@ -6,13 +6,16 @@ import com.shpaginWork.docWork.models.Users;
 import com.shpaginWork.docWork.repo.DocsRepository;
 import com.shpaginWork.docWork.repo.NewsRepository;
 import com.shpaginWork.docWork.repo.UsersRepository;
-import com.shpaginWork.docWork.storage.StorageService;
+import com.shpaginWork.docWork.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,12 +27,6 @@ import java.util.Date;
 @Controller
 public class LkController {
 
-    private final StorageService storageService;
-
-    @Autowired
-    public LkController(StorageService storageService) {
-        this.storageService = storageService;
-    }
 
     @Autowired
     UsersRepository usersRepository;
@@ -39,6 +36,9 @@ public class LkController {
 
     @Autowired
     NewsRepository newsRepository;
+
+    @Autowired
+    private StorageService service;
 
 
     @GetMapping("/lk")
@@ -58,9 +58,6 @@ public class LkController {
 
     @PostMapping("/lk")
     public String avatar(@RequestParam("file") MultipartFile file) {
-
-        storageService.store(file);
-
 
         //Находим информацию об авторизованном пользователе
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -93,17 +90,16 @@ public class LkController {
     @PostMapping("/sendMessage")
     public String send(@RequestParam("file") MultipartFile file, @RequestParam String recipient, @RequestParam String content) {
 
-        storageService.store(file);
+        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
 
+        service.uploadFile(file, fileName);
 
         //Находим информацию об авторизованном пользователе
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         //Находим пользователя по логину и передаем на страницу всю информацию, передав объект user
         Users user = usersRepository.findByLogin(userDetails.getUsername());
-
-        String link = System.getProperty("catalina.home")+ File.separator + "files" + File.separator + file.getOriginalFilename();
-        Docs newDoc = new Docs(user.getLogin(), recipient, content, link, new Date());
+        Docs newDoc = new Docs(user.getLogin(), recipient, content, fileName, new Date());
         docsRepository.save(newDoc);
 
         return "redirect:/sent";
@@ -182,6 +178,19 @@ public class LkController {
         Iterable<Users> block = usersRepository.findAll();
         model.addAttribute("block", block);
         return "lkUsers";
+    }
+
+
+    @GetMapping("/{fileName}")
+    public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable String fileName) {
+        byte[] data = service.downloadFile(fileName);
+        ByteArrayResource resource = new ByteArrayResource(data);
+        return ResponseEntity
+                .ok()
+                .contentLength(data.length)
+                .header("Content-type", "application/octet-stream")
+                .header("Content-disposition", "attachment; filename=\"" + fileName + "\"")
+                .body(resource);
     }
 
 
