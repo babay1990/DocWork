@@ -55,7 +55,7 @@ public class StorageService {
         try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
             fos.write(file.getBytes());
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
         return convertedFile;
     }

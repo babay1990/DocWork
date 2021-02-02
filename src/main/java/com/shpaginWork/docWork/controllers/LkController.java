@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -50,31 +50,8 @@ public class LkController {
         //Находим пользователя по логину и передаем на страницу всю информацию, передав объект user
         Users user = usersRepository.findByLogin(userDetails.getUsername());
         model.addAttribute("user", user);
-        model.addAttribute("url", user.getUrl());
         return "lk";
     }
-
-
-
-    @PostMapping("/lk")
-    public String avatar(@RequestParam("file") MultipartFile file) {
-
-        //Находим информацию об авторизованном пользователе
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        //Находим пользователя по логину и передаем на страницу всю информацию, передав объект user
-        Users user = usersRepository.findByLogin(userDetails.getUsername());
-
-        String link = System.getProperty("catalina.home") + File.separator + "files" + File.separator + file.getOriginalFilename();
-        user.setUrl(link);
-        usersRepository.save(user);
-
-        return "redirect:/lk";
-    }
-
-
-
-
 
 
     @GetMapping("/sendMessage")
@@ -99,7 +76,7 @@ public class LkController {
 
         //Находим пользователя по логину и передаем на страницу всю информацию, передав объект user
         Users user = usersRepository.findByLogin(userDetails.getUsername());
-        Docs newDoc = new Docs(user.getLogin(), recipient, content, fileName, new Date());
+        Docs newDoc = new Docs(user.getFullName(), recipient, content, fileName, new Date());
         docsRepository.save(newDoc);
 
         return "redirect:/sent";
@@ -120,7 +97,7 @@ public class LkController {
         all.forEach(ar::add);
 
         for(int i = 0; i < ar.size(); i++){
-            if(ar.get(i).getRecipient().equals(user.getLogin())){
+            if(ar.get(i).getRecipient().equals(user.getFullName())){
                 resul.add(ar.get(i));
             }
         }
@@ -144,7 +121,7 @@ public class LkController {
         all.forEach(ar::add);
 
         for(int i = 0; i < ar.size(); i++){
-            if(ar.get(i).getSender().equals(user.getLogin())){
+            if(ar.get(i).getSender().equals(user.getFullName())){
                 resul.add(ar.get(i));
             }
         }

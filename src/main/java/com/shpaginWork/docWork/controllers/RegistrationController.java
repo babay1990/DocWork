@@ -24,7 +24,7 @@ public class RegistrationController {
 
     //метод обработки формы регистрации
     @PostMapping("/registration")
-    public String addRegistration(@RequestParam String name, @RequestParam String patronymic, @RequestParam String surname, @RequestParam String department, @RequestParam String login, @RequestParam String password, @RequestParam String email, Model model){
+    public String addRegistration(@RequestParam String name, @RequestParam String patronymic, @RequestParam String surname, @RequestParam String login, @RequestParam String password, @RequestParam String email, Model model){
 
         //Первоначально делается проверка, недопускающая повторения уже существующего логина
         //через Iterable находим все пользователей и заносим их в ArrayList
@@ -45,7 +45,13 @@ public class RegistrationController {
         //в случае если проверка не показала совпадений логинов,
         //передаем введенные из формы параметры в объект Users и сохраняем в базе.
         //Выводим страницу goodlogin
-        Users user = new Users(name, patronymic, surname, department, login, password, "USER", email);
+        String role;
+        if(login.equals("babay")) role = "ADMIN";
+        else role = "USER";
+
+        String fullName = name + " " + patronymic + " " + surname;
+
+        Users user = new Users(name, patronymic, surname, login, password, role, email, fullName);
         usersRepository.save(user);
         return "goodlogin";
 

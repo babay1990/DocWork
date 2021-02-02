@@ -34,41 +34,18 @@
     <br>
 
 
-    <h3>Мои данные</h3>
+    <h3>Мои данные</h3><br>
     <div class="alert alert-info mt-2">
-
-        <div class="row mb-2">
-            <div>
-                <img th:src="${url}" alt="альтернативный текст" height="200" width="100">
-            </div>
-
-            <div>
-                <form method="POST" enctype="multipart/form-data" action="/lk">
-                    <table>
-                        <tr><td>Для загрузки фотографии выберите файл:</td></tr>
-                        <tr><td><input type="file" name="file" /></td></tr>
-                        <tr><td><input type="submit" value="Загрузить фотографию" /></td></tr>
-                    </table>
-                </form>
-            </div>
-        </div>
-
-
         <h3 th:text="'Ваш id - ' + ${user.id}"/>
         <h3 th:text="'Ваше имя - ' + ${user.name}"/>
         <h3 th:text="'Ваше отчество - ' + ${user.patronymic}"/>
         <h3 th:text="'Ваша фамилия - ' + ${user.surname}"/>
-        <h3 th:text="'Подразделение - ' + ${user.department}"/>
         <h3 th:text="'Ваш логин - ' + ${user.login}"/>
         <h3 th:text="'Ваш пароль - ' + ${user.password}"/>
         <h3 th:text="'Ваши права доступа - ' + ${user.role}"/>
         <h3 th:text="'Ваш email - ' + ${user.email}"/>
     </div>
     <br>
-
-    <a class="p-2 text-dark" href="/change">Изменить данные</a>
-
-
 
 </main>
 

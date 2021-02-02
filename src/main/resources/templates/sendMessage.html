@@ -40,7 +40,7 @@
             <table>
                 <tr><input name="recipient" placeholder="Введите получателя" class="form-control"  list="cit" required/></tr><br>
                 <datalist id="cit">
-                    <option th:each="el : ${block}" th:value="${el.login}"/>
+                    <option th:each="el : ${block}" th:value="${el.fullName}"/>
                 </datalist>
                 <tr><input type="text" name="content" placeholder="Содержание" class="form-control" required></tr><br>
                 <tr><td>Загрузите файл</td><td><input type="file" name="file" /></td></tr>

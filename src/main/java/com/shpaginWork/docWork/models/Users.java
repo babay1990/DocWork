@@ -8,11 +8,7 @@ public class Users {
 
     public Users() {};
 
-    public Users(String url) {
-        this.url = url;
-    }
-
-    public Users(String name, String patronymic, String surname, String department, String login, String password, String role, String email) {
+    public Users(String name, String patronymic, String surname, String login, String password, String role, String email, String fullName) {
         this.login = login;
         this.password = password;
         this.role = role;
@@ -20,7 +16,8 @@ public class Users {
         this.name = name;
         this.patronymic = patronymic;
         this.surname = surname;
-        this.department = department;
+        this.fullName = fullName;
+
     }
 
     @Id
@@ -30,21 +27,12 @@ public class Users {
     private String name;
     private String patronymic;
     private String surname;
-    private String department;
+    private String fullName;
     private String login;
     private String password;
     private String role;
     private String email;
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    private String url;
 
     public String getRole() {
         return role;
@@ -110,11 +98,11 @@ public class Users {
         this.surname = surname;
     }
 
-    public String getDepartment() {
-        return department;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setDepartment(String department) {
-        this.department = department;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 }
