@@ -47,6 +47,10 @@
                 <td></td><td><input type="submit" value="Отправить сообщение" /></td>
             </table>
         </form>
+
+        <div th:if="${message}">
+            <h4 th:text="${message}"/>
+        </div>
     </div>
 
 </main>

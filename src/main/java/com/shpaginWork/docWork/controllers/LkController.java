@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -65,21 +67,29 @@ public class LkController {
 
 
     @PostMapping("/sendMessage")
-    public String send(@RequestParam("file") MultipartFile file, @RequestParam String recipient, @RequestParam String content) {
+    public String send(@RequestParam("file") MultipartFile file, @RequestParam String recipient, @RequestParam String content, RedirectAttributes redirectAttributes) {
 
-        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
 
-        service.uploadFile(file, fileName);
+        if(!file.isEmpty()){
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            service.uploadFile(file, fileName);
 
-        //Находим информацию об авторизованном пользователе
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            //Находим информацию об авторизованном пользователе
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        //Находим пользователя по логину и передаем на страницу всю информацию, передав объект user
-        Users user = usersRepository.findByLogin(userDetails.getUsername());
-        Docs newDoc = new Docs(user.getFullName(), recipient, content, fileName, new Date());
-        docsRepository.save(newDoc);
+            //Находим пользователя по логину и передаем на страницу всю информацию, передав объект user
+            Users user = usersRepository.findByLogin(userDetails.getUsername());
+            Docs newDoc = new Docs(user.getFullName(), recipient, content, fileName, new Date());
+            docsRepository.save(newDoc);
 
-        return "redirect:/sent";
+            return "redirect:/sent";
+        }
+        else {
+            redirectAttributes.addFlashAttribute("message",
+                    "Файл не выбран! Пожалуйста, загрузите файл-сообщение!");
+            return "redirect:/sendMessage";
+        }
+
     }
 
     @GetMapping("/inbox")
