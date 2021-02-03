@@ -30,6 +30,9 @@
             <input type="text" name="email" placeholder="Введите email" class="form-control" required><br>
             <button type="submit">Зарегестрироваться</button>
         </form>
+        <div th:if="${message}">
+            <h4 th:text="${message}"/>
+        </div>
     </div>
 </main>
 

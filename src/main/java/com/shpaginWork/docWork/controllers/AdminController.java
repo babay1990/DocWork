@@ -26,8 +26,7 @@ public class AdminController {
     @Autowired
     NewsRepository newsRepository;
 
-    @Autowired
-    public JavaMailSender emailSender;
+
 
     //Вход на страницу администратора
     @GetMapping("/admin")
@@ -100,48 +99,5 @@ public class AdminController {
         return "redirect:/adminNews";
     }
 
-
-
-
-
-    @GetMapping("/sendEmail")
-    public String send(Model model){
-        return "sendEmail";
-    }
-
-    //Метод обработки формы. Передаем тему, текст письма и адрес отправления
-    @PostMapping(value = "/sendEmail", params = "bar4")
-    public String sendMail(@RequestParam String theme, @RequestParam String text, @RequestParam String email, Model model) throws MessagingException {
-
-        //Создаем сообщение
-        SimpleMailMessage message = new SimpleMailMessage();
-
-        //задаем адрес отправителя
-        message.setFrom("shpaginjava@gmail.com");
-        //задаем адрес получателя из формы, тему и текст письма
-        message.setTo(email);
-        message.setSubject(theme);
-        message.setText(text);
-
-        //Отправляем сообщение, возвращаемся на страницу администратора
-        emailSender.send(message);
-        return "redirect:/admin";
-    }
-
-
-
-
-
-
-
-
-    @GetMapping("/test")
-    public String test(Model model){
-
-        Iterable<Users> block = usersRepository.findAll();
-        model.addAttribute("block", block);
-
-        return "test";
-    }
 
 }

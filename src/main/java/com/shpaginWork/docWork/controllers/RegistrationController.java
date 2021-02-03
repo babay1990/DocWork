@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 
@@ -24,7 +25,7 @@ public class RegistrationController {
 
     //метод обработки формы регистрации
     @PostMapping("/registration")
-    public String addRegistration(@RequestParam String name, @RequestParam String patronymic, @RequestParam String surname, @RequestParam String login, @RequestParam String password, @RequestParam String email, Model model){
+    public String addRegistration(@RequestParam String name, @RequestParam String patronymic, @RequestParam String surname, @RequestParam String login, @RequestParam String password, @RequestParam String email, Model model, RedirectAttributes redirectAttributes){
 
         //Первоначально делается проверка, недопускающая повторения уже существующего логина
         //через Iterable находим все пользователей и заносим их в ArrayList
@@ -38,7 +39,9 @@ public class RegistrationController {
         //на которой просим пользователя ввести другие данные
         for(int i = 0; i < list.size(); i++){
             if(list.get(i).getLogin().equals(login)){
-                return "badlogin";
+                redirectAttributes.addFlashAttribute("message",
+                        "Выбранный логин уже занят! Попробуйте придумать новый!");
+                return "redirect:/registration";
             }
         }
 
