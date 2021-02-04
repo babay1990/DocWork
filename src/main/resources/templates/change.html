@@ -24,25 +24,32 @@
     </div>
     <br>
 
-    <h3 class="my-0 mr-md-auto font-weight-normal">Введите данные для отправки сообщения</h3><br>
 
-    <div>
-        <form method="POST" enctype="multipart/form-data" action="/sendMessage">
-            <table>
-                <tr><input name="recipient" placeholder="Введите получателя" class="form-control"  list="cit" required/></tr><br>
-                <datalist id="cit">
-                    <option th:each="el : ${block}" th:value="${el.fullName}"/>
-                </datalist>
-                <tr><input type="text" name="content" placeholder="Содержание" class="form-control" required></tr><br>
-                <tr><td>Загрузите файл</td><td><input type="file" name="file" /></td></tr>
-                <td></td><td><input type="submit" value="Отправить сообщение" /></td>
-            </table>
+    <h3>Внесите изменения в данные</h3><br>
+    <div class="alert alert-info ">
+        <form action="change" method="post">
+            <label>Имя:</label><br>
+            <input th:value="${user.name}" name="name" size="50" required><br><br>
+            <label>Отчество:</label><br>
+            <input th:value="${user.patronymic}" name="patronymic" size="50" required><br><br>
+            <label>Фамилия:</label><br>
+            <input th:value="${user.surname}" name="surname" size="50" required><br><br>
+            <label>Логин:</label><br>
+            <input th:value="${user.login}" name="login" size="50" required><br><br>
+            <label>Пароль:</label><br>
+            <input th:value="${user.password}" name="password" size="50" required><br><br>
+            <label>Email:</label><br>
+            <input th:value="${user.email}" name="email" size="50" required><br><br>
+            <button type="submit">Изменить данные</button>
+
         </form>
-
-        <div th:if="${message}">
-            <h4 th:text="${message}"/>
-        </div>
     </div>
+    <br>
+
+
+
+
+
 
 </main>
 

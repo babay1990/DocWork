@@ -181,4 +181,38 @@ public class LkController {
     }
 
 
+    @GetMapping("/change")
+    public String change(Model model){
+
+        //Находим информацию об авторизованном пользователе
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        //Находим пользователя по логину и передаем на страницу всю информацию, передав объект user
+        Users user = usersRepository.findByLogin(userDetails.getUsername());
+        model.addAttribute("user", user);
+        return "change";
+    }
+
+
+    @PostMapping("/change")
+    public String changeParam(@RequestParam String name, @RequestParam String patronymic, @RequestParam String surname, @RequestParam String login, @RequestParam String password, @RequestParam String email, Model model){
+
+        //Находим информацию об авторизованном пользователе
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        //Находим пользователя по логину и передаем на страницу всю информацию, передав объект user
+        Users user = usersRepository.findByLogin(userDetails.getUsername());
+        user.setName(name);
+        user.setPatronymic(patronymic);
+        user.setSurname(surname);
+        user.setLogin(login);
+        user.setPassword(password);
+        user.setEmail(email);
+        user.setFullName(name + " " + patronymic + " " + surname);
+        usersRepository.save(user);
+        return "redirect:/lk";
+
+    }
+
+
 }

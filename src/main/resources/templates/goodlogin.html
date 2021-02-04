@@ -1,22 +1,13 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Serving Web Content</title>
+    <title>DocWork</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="icon" href="https://1.downloader.disk.yandex.ru/preview/dc8ac5c9345ae1d421aa354458f31be6415a4fa687dab585ae39793f43a9b2b5/inf/5ROBTELSzGCVkES0r3nc0gG8pTswXGhXHfV7smltXKtepGqkD-Ki18aHdxTcr_2X5L36ETbpHQAd72Y-r4o3wA%3D%3D?uid=60646558&filename=docimg.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=60646558&tknv=v2&size=1903x937" type="image">
 </head>
 <body>
-<header>
-    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-        <h4 class="my-0 mr-md-auto font-weight-normal">DocWork</h4>
-        <nav class="my-2 my-md-0 mr-md-3">
-            <a class="p-2 text-dark" href="/">Новости</a>
-            <a class="p-2 text-dark" href="/lk">Личный кабинет</a>
-            <a class="p-2 text-dark" href="/registration">Регистрация</a>
-            <a class="p-2 text-dark" href="/login">Войти</a>
-        </nav>
-    </div>
-</header>
+<header  th:insert="blocks/header :: header"></header>
 
 <main class="container">
     <h2>Поздравляем! Вы успешно прошли регистрацию!</h2>
