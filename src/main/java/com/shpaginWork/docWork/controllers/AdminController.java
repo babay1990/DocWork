@@ -1,22 +1,19 @@
 package com.shpaginWork.docWork.controllers;
 
-import com.shpaginWork.docWork.models.Docs;
 import com.shpaginWork.docWork.models.News;
 import com.shpaginWork.docWork.models.Users;
 import com.shpaginWork.docWork.repo.NewsRepository;
 import com.shpaginWork.docWork.repo.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.mail.MessagingException;
 import java.util.ArrayList;
 
+//контроллер для действий на панели администратора
 @Controller
 public class AdminController {
 
@@ -26,30 +23,32 @@ public class AdminController {
     @Autowired
     NewsRepository newsRepository;
 
-
-
     //Вход на страницу администратора
+    //На ней отображаем количество зарегестрированных пользователей и количество размещенных новостей
     @GetMapping("/admin")
     public String enter(Model model){
 
+        //помещаем всех пользователей в arraylist и находим его размер
         Iterable<Users> all = usersRepository.findAll();
         ArrayList<Users> ar = new ArrayList<>();
         all.forEach(ar::add);
         int usersSize = ar.size();
 
+        //помещаем все новости в arraylist и находим его размер
         Iterable<News> allNews = newsRepository.findAll();
         ArrayList<News> arNews = new ArrayList<>();
         allNews.forEach(arNews::add);
         int newsSize = arNews.size();
 
+        //передаем на страницу полученные размеры
         model.addAttribute("usersSize", usersSize);
         model.addAttribute("newsSize", newsSize);
-
 
         return "admin";
     }
 
     //Вход на страницу adminUsers
+    //На странице отображаются данные всех зарегестрированных пользователей
     @GetMapping("/adminUsers")
     public String enterAdminUsers(Model model) {
 
@@ -59,12 +58,11 @@ public class AdminController {
         return "adminUsers";
     }
 
-
-
     //Метод для обработки формы удаления пользователя
     @PostMapping(value = "/adminUsers", params = "bar2")
     public String changUsersParametrs(@RequestParam String login, Model model) {
 
+        //находим пользователя в базе по полученному логину и удаляем
         Users user = usersRepository.findByLogin(login);
         usersRepository.delete(user);
         return "redirect:/adminUsers";
@@ -81,7 +79,7 @@ public class AdminController {
         return "redirect:/adminUsers";
     }
 
-
+    //страница для просмотра размещенных новостей
     @GetMapping("/adminNews")
     public String adminNews(Model model) {
         Iterable<News> block = newsRepository.findAll();
@@ -89,15 +87,13 @@ public class AdminController {
         return "adminNews";
     }
 
-
     //Метод для обработки формы удаления новости
     @PostMapping(value = "/adminNews", params = "bar3")
     public String deleteNews (@RequestParam String title, Model model) {
 
+        //находим новость по полученному названию и удаляем из базы
         News news = newsRepository.findByTitle(title);
         newsRepository.delete(news);
         return "redirect:/adminNews";
     }
-
-
 }

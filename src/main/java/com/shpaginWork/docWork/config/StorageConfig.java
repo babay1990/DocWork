@@ -9,14 +9,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+//конфигурация для связи с Amazon S3
 @Configuration
 public class StorageConfig {
 
+    //передаем значения из файла application.yml
     @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
 
     @Value("${cloud.aws.credentials.secret-key}")
     private String accessSecret;
+
     @Value("${cloud.aws.region.static}")
     private String region;
 

@@ -3,6 +3,7 @@ package com.shpaginWork.docWork;
 import com.shpaginWork.docWork.models.Users;
 import com.shpaginWork.docWork.repo.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -32,6 +33,13 @@ public class CustomUserDetailService implements UserDetailsService {
                 .roles(myUser.getRole())
                 .build();
 
+        return user;
+    }
+
+    public Users checkUser(){
+        //Находим информацию об авторизованном пользователе и передаем в объект user
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users user = usersRepository.findByLogin(userDetails.getUsername());
         return user;
     }
 }

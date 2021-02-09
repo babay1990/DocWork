@@ -10,9 +10,5 @@ public class DocWorkApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DocWorkApplication.class, args);
-
-
 	}
-
-
 }

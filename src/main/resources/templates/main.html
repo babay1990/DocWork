@@ -17,10 +17,10 @@
 
 
 
-    <div class="row mb-2">
+    <div class="row dark mb-2">
         <div th:each="el : ${block}" class="col-md-6">
-            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                <div class="col p-4 d-flex flex-column position-static">
+            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-2 ml-1 mr-1 mt-2 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static alert-primary">
                     <h3 th:text="${el.title}"/>
                     <div th:text="${el.autor_name}" class="mb-1 text-muted"/>
                     <p th:text="${el.annotation}"/>
