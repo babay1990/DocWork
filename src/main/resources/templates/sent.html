@@ -29,12 +29,30 @@
 
 
 
-    <div th:each="doc : ${resul}" class="alert alert-info mt-2">
-        <h3 th:text="${doc.recipient}"/>
-        <h4 th:text="${doc.content}"/>
-        <a th:href="${doc.link}" th:text="Сообщение"/>
-        <h4 th:text="${doc.date}"/>
-    </div>
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Получатель</th>
+            <th scope="col">Сообщение</th>
+            <th scope="col">Вложения</th>
+            <th scope="col">Дата</th>
+
+        </tr>
+        </thead>
+        <tbody th:each="doc : ${resul}">
+        <tr>
+            <td th:text="${doc.recipient}"/>
+            <td th:text="${doc.content}"/>
+            <td><a th:href="${doc.link}" th:text="${doc.link}" /></td>
+            <td th:text="${doc.date}"/>
+            <td>
+                <form action="?bar4" method="post">
+                    <button type="submit" name="content" th:value="${doc.content}">Удалить сообщение</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
 
 

@@ -1,12 +1,8 @@
 package com.shpaginWork.docWork.controllers;
 
 import com.shpaginWork.docWork.CustomUserDetailService;
-import com.shpaginWork.docWork.models.Docs;
-import com.shpaginWork.docWork.models.News;
-import com.shpaginWork.docWork.models.Users;
-import com.shpaginWork.docWork.repo.DocsRepository;
-import com.shpaginWork.docWork.repo.NewsRepository;
-import com.shpaginWork.docWork.repo.UsersRepository;
+import com.shpaginWork.docWork.models.*;
+import com.shpaginWork.docWork.repo.*;
 import com.shpaginWork.docWork.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -22,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 
 //контроллер личного кабинета
 @Controller
@@ -41,6 +38,12 @@ public class LkController {
 
     @Autowired
     private CustomUserDetailService userService;
+
+    @Autowired
+    private SentRepository sentRepository;
+
+    @Autowired
+    private InboxRepository inboxRepository;
 
     //страница с личными данными
     @GetMapping("/lk")
@@ -74,15 +77,32 @@ public class LkController {
 
             Users user = userService.checkUser();
 
-            Docs newDoc = new Docs(user.getFullName(), recipient, content, fileName, new Date());
-            docsRepository.save(newDoc);
+            Inbox inbox = new Inbox(user.getFullName(), recipient, content, fileName, new Date());
+            Sent sent = new Sent(user.getFullName(), recipient, content, fileName, new Date());
+
+            inboxRepository.save(inbox);
+            sentRepository.save(sent);
+
             return "redirect:/sent";
         }
         //если файл пустой, то отправляем пользователю сообщение на страницу
         else {
-            redirectAttributes.addFlashAttribute("message",
+
+            Users user = userService.checkUser();
+
+            Inbox inbox = new Inbox(user.getFullName(), recipient, content, new Date());
+            Sent sent = new Sent(user.getFullName(), recipient, content, new Date());
+
+            inboxRepository.save(inbox);
+            sentRepository.save(sent);
+
+            return "redirect:/sent";
+
+
+
+            /*redirectAttributes.addFlashAttribute("message",
                     "Файл не выбран! Пожалуйста, загрузите файл-сообщение!");
-            return "redirect:/sendMessage";
+            return "redirect:/sendMessage";*/
         }
     }
 
@@ -94,9 +114,9 @@ public class LkController {
         Users user = userService.checkUser();
 
         //находим все документы и добавляем в arraylist
-        Iterable<Docs> all = docsRepository.findAll();
-        ArrayList<Docs> ar = new ArrayList<>();
-        ArrayList<Docs> resul = new ArrayList<>();
+        Iterable<Inbox> all = inboxRepository.findAll();
+        ArrayList<Inbox> ar = new ArrayList<>();
+        ArrayList<Inbox> resul = new ArrayList<>();
         all.forEach(ar::add);
 
         //вносим в отдельный arraylist все документы, в коорых имя пользователя совпадает с именем получателя
@@ -118,9 +138,9 @@ public class LkController {
         Users user = userService.checkUser();
 
         //находим все документы и добавляем в arraylist
-        Iterable<Docs> all = docsRepository.findAll();
-        ArrayList<Docs> ar = new ArrayList<>();
-        ArrayList<Docs> resul = new ArrayList<>();
+        Iterable<Sent> all = sentRepository.findAll();
+        ArrayList<Sent> ar = new ArrayList<>();
+        ArrayList<Sent> resul = new ArrayList<>();
         all.forEach(ar::add);
 
         //вносим в отдельный arraylist все документы, в коорых имя пользователя совпадает с именем отправителя
@@ -206,4 +226,23 @@ public class LkController {
         usersRepository.save(user);
         return "redirect:/lk";
     }
+
+    //метод удаления входящих сообщений
+    @PostMapping(value = "/inbox", params = "bar3")
+    public String deleteInboxMessage(@RequestParam String content, Model model) {
+
+        Inbox inbox = inboxRepository.findByContent(content);
+        inboxRepository.delete(inbox);
+        return "redirect:/inbox";
+    }
+
+    //метод удаления исходящих сообщений
+    @PostMapping(value = "/sent", params = "bar4")
+    public String deleteSentMessage(@RequestParam String content, Model model) {
+
+        Sent sent = sentRepository.findByContent(content);
+        sentRepository.delete(sent);
+        return "redirect:/sent";
+    }
+
 }
