@@ -9,4 +9,5 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 
     Users findByLogin(String login);
     Users save(Users user);
+    Users findByFullName(String fullName);
 }

@@ -40,9 +40,9 @@
         </thead>
         <tbody th:each="doc : ${resul}">
         <tr>
-            <td th:text="${doc.sender}"/>
+            <td><a th:href="'/userDetails/' + ${doc.sender}" th:text="${doc.sender}"/></td>
             <td th:text="${doc.content}"/>
-            <td><a th:href="${doc.link}" th:text="${doc.link}" /></td>
+            <td><a th:href="${doc.link}" th:text="${doc.link}"/></td>
             <td th:text="${doc.date}"/>
             <td>
                 <form action="?bar3" method="post">
@@ -52,6 +52,9 @@
         </tr>
         </tbody>
     </table>
+
+
+
 
 </main>
 

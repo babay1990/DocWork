@@ -245,4 +245,13 @@ public class LkController {
         return "redirect:/sent";
     }
 
+    //метод просмотра данных отправителя
+    @GetMapping("/userDetails/{sender}")
+    public String details(@PathVariable(value = "sender") String sender, Model model){
+
+        Users user = usersRepository.findByFullName(sender);
+        model.addAttribute("user", user);
+        return "userDetails";
+    }
+
 }
