@@ -33,7 +33,7 @@
                 <datalist id="cit">
                     <option th:each="el : ${block}" th:value="${el.fullName}"/>
                 </datalist>
-                <tr><input type="text" name="content" placeholder="Содержание" class="form-control" required></tr><br>
+                <tr><input type="text" name="content" placeholder="Сообщение" class="form-control" required></tr><br>
                 <tr><td>Загрузите файл</td><td><input type="file" name="file" /></td></tr>
                 <td></td><td><input type="submit" value="Отправить сообщение" /></td>
             </table>

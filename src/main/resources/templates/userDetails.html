@@ -13,14 +13,34 @@
     <br>
 
     <h3 th:text="${user.fullName}"/><br>
-    <div class="alert alert-info mt-2">
-        <h4 th:text="'Имя пользователя - ' + ${user.name}"/>
-        <h4 th:text="'Отчество пользователя - ' + ${user.patronymic}"/>
-        <h4 th:text="'Фамилия пользователя - ' + ${user.surname}"/>
-        <h4 th:text="'Логин пользователя - ' + ${user.login}"/>
-        <h4 th:text="'Права доступа пользователя - ' + ${user.role}"/>
-        <h4 th:text="'Email пользователя - ' + ${user.email}"/>
-    </div>
+
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">ФИО</th>
+            <th scope="col">Логин</th>
+            <th scope="col">Права доступа</th>
+            <th scope="col">Email</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${user.fullName}"/>
+            <td th:text="${user.login}"/>
+            <td th:text="${user.role}"/>
+            <td th:text="${user.email}"/>
+
+            <td>
+                <form action="?bar5" method="post">
+                    <button type="submit" name="fullName" th:value="${user.fullName}">Написать сообщение</button>
+                </form>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+
 
 
 </main>

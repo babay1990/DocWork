@@ -15,7 +15,8 @@
         <h2 th:text="${el.title}"/>
         <h4 th:text="${el.annotation}"/>
         <p th:text="${el.text}"/>
-        <h3 th:text="'Автор статьи ' + ${el.autor_name}"/>
+        <p>Автор статьи:</p>
+        <a th:href="'/userDetails/' + ${el.autor_name}" th:text="${el.autor_name}"/>
     </div>
 
 

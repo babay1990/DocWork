@@ -18,7 +18,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Optional;
 
 //контроллер личного кабинета
 @Controller
@@ -97,12 +96,6 @@ public class LkController {
             sentRepository.save(sent);
 
             return "redirect:/sent";
-
-
-
-            /*redirectAttributes.addFlashAttribute("message",
-                    "Файл не выбран! Пожалуйста, загрузите файл-сообщение!");
-            return "redirect:/sendMessage";*/
         }
     }
 
@@ -236,6 +229,15 @@ public class LkController {
         return "redirect:/inbox";
     }
 
+    //метод ответа на определенное сообщение
+    @PostMapping(value = "/inbox", params = "bar4")
+    public String sendMessageTo(@RequestParam String sender, Model model) {
+
+        model.addAttribute("sender", sender);
+        return "/sendMessageTo";
+    }
+
+
     //метод удаления исходящих сообщений
     @PostMapping(value = "/sent", params = "bar4")
     public String deleteSentMessage(@RequestParam String content, Model model) {
@@ -252,6 +254,13 @@ public class LkController {
         Users user = usersRepository.findByFullName(sender);
         model.addAttribute("user", user);
         return "userDetails";
+    }
+
+    //отправить сообщение с userDetails
+    @PostMapping(value = "/userDetails/{sender}", params = "bar5")
+    public String messageFromUserDetails(@RequestParam String fullName, Model model) {
+        model.addAttribute("sender", fullName);
+        return "/sendMessageTo";
     }
 
 }
