@@ -263,4 +263,38 @@ public class LkController {
         return "/sendMessageTo";
     }
 
+    @PostMapping("/sendMessageTo")
+    public String sendMessageTo(@RequestParam("file") MultipartFile file, @RequestParam String recipient, @RequestParam String content, RedirectAttributes redirectAttributes) {
+
+        //если файл не пустой, то присваиваем ему имя, сохраняем в amazon S3 и в базе данных
+        //в базу передаем отправителя, получателя, описание сообщения, имя файла и дату отправки
+        if(!file.isEmpty()){
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            service.uploadFile(file, fileName);
+
+            Users user = userService.checkUser();
+
+            Inbox inbox = new Inbox(user.getFullName(), recipient, content, fileName, new Date());
+            Sent sent = new Sent(user.getFullName(), recipient, content, fileName, new Date());
+
+            inboxRepository.save(inbox);
+            sentRepository.save(sent);
+
+            return "redirect:/sent";
+        }
+        //если файл пустой, то отправляем пользователю сообщение на страницу
+        else {
+
+            Users user = userService.checkUser();
+
+            Inbox inbox = new Inbox(user.getFullName(), recipient, content, new Date());
+            Sent sent = new Sent(user.getFullName(), recipient, content, new Date());
+
+            inboxRepository.save(inbox);
+            sentRepository.save(sent);
+
+            return "redirect:/sent";
+        }
+    }
+
 }

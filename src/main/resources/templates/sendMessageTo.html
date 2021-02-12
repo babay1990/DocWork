@@ -27,7 +27,7 @@
     <h3 class="my-0 mr-md-auto font-weight-normal">Введите данные для отправки сообщения</h3><br>
 
     <div>
-        <form method="POST" enctype="multipart/form-data" action="/sendMessage">
+        <form method="POST" enctype="multipart/form-data" action="/sendMessageTo">
             <table>
                 <tr><input th:value="${sender}" name="recipient" class="form-control"/></tr><br>
                 <tr><input type="text" name="content" placeholder="Сообщение" class="form-control" required></tr><br>
