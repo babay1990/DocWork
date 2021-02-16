@@ -30,13 +30,6 @@
             <td th:text="${user.login}"/>
             <td th:text="${user.role}"/>
             <td th:text="${user.email}"/>
-
-            <td>
-                <form action="?bar5" method="post">
-                    <button type="submit" name="fullName" th:value="${user.fullName}">Написать сообщение</button>
-                </form>
-            </td>
-
         </tr>
         </tbody>
     </table>

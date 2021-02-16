@@ -46,12 +46,6 @@
             <td th:text="${doc.date}"/>
 
             <td>
-                <form action="?bar4" method="post">
-                    <button type="submit" name="sender" th:value="${doc.sender}" style="height: 53px; width: 100px">Ответить</button>
-                </form>
-            </td>
-
-            <td>
                 <form action="?bar3" method="post">
                     <button type="submit" name="content" th:value="${doc.content}">Удалить сообщение</button>
                 </form>

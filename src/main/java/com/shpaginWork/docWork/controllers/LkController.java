@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -76,8 +77,10 @@ public class LkController {
 
             Users user = userService.checkUser();
 
-            Inbox inbox = new Inbox(user.getFullName(), recipient, content, fileName, new Date());
-            Sent sent = new Sent(user.getFullName(), recipient, content, fileName, new Date());
+            Date date = new Date();
+
+            Inbox inbox = new Inbox(user.getFullName(), recipient, content, fileName, date);
+            Sent sent = new Sent(user.getFullName(), recipient, content, fileName, date);
 
             inboxRepository.save(inbox);
             sentRepository.save(sent);
@@ -89,8 +92,10 @@ public class LkController {
 
             Users user = userService.checkUser();
 
-            Inbox inbox = new Inbox(user.getFullName(), recipient, content, new Date());
-            Sent sent = new Sent(user.getFullName(), recipient, content, new Date());
+            Date date = new Date();
+
+            Inbox inbox = new Inbox(user.getFullName(), recipient, content, date);
+            Sent sent = new Sent(user.getFullName(), recipient, content, date);
 
             inboxRepository.save(inbox);
             sentRepository.save(sent);
@@ -229,15 +234,6 @@ public class LkController {
         return "redirect:/inbox";
     }
 
-    //метод ответа на определенное сообщение
-    @PostMapping(value = "/inbox", params = "bar4")
-    public String sendMessageTo(@RequestParam String sender, Model model) {
-
-        model.addAttribute("sender", sender);
-        return "/sendMessageTo";
-    }
-
-
     //метод удаления исходящих сообщений
     @PostMapping(value = "/sent", params = "bar4")
     public String deleteSentMessage(@RequestParam String content, Model model) {
@@ -255,46 +251,4 @@ public class LkController {
         model.addAttribute("user", user);
         return "userDetails";
     }
-
-    //отправить сообщение с userDetails
-    @PostMapping(value = "/userDetails/{sender}", params = "bar5")
-    public String messageFromUserDetails(@RequestParam String fullName, Model model) {
-        model.addAttribute("sender", fullName);
-        return "/sendMessageTo";
-    }
-
-    @PostMapping("/sendMessageTo")
-    public String sendMessageTo(@RequestParam("file") MultipartFile file, @RequestParam String recipient, @RequestParam String content, RedirectAttributes redirectAttributes) {
-
-        //если файл не пустой, то присваиваем ему имя, сохраняем в amazon S3 и в базе данных
-        //в базу передаем отправителя, получателя, описание сообщения, имя файла и дату отправки
-        if(!file.isEmpty()){
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            service.uploadFile(file, fileName);
-
-            Users user = userService.checkUser();
-
-            Inbox inbox = new Inbox(user.getFullName(), recipient, content, fileName, new Date());
-            Sent sent = new Sent(user.getFullName(), recipient, content, fileName, new Date());
-
-            inboxRepository.save(inbox);
-            sentRepository.save(sent);
-
-            return "redirect:/sent";
-        }
-        //если файл пустой, то отправляем пользователю сообщение на страницу
-        else {
-
-            Users user = userService.checkUser();
-
-            Inbox inbox = new Inbox(user.getFullName(), recipient, content, new Date());
-            Sent sent = new Sent(user.getFullName(), recipient, content, new Date());
-
-            inboxRepository.save(inbox);
-            sentRepository.save(sent);
-
-            return "redirect:/sent";
-        }
-    }
-
 }
