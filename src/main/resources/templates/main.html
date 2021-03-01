@@ -9,26 +9,56 @@
 <body>
 <header  th:insert="blocks/header :: header"></header>
 
-<main class="container">
-
-    <h2>Новости</h2>
-    <br>
-
-
-
-
-    <div class="row dark mb-2">
-        <div th:each="el : ${block}" class="col-md-6">
-            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-2 ml-1 mr-1 mt-2 shadow-sm h-md-250 position-relative">
-                <div class="col p-4 d-flex flex-column position-static alert-primary">
-                    <h3 th:text="${el.title}"/>
-                    <div th:text="${el.autor_name}" class="mb-1 text-muted"/>
-                    <p th:text="${el.annotation}"/>
-                    <a th:href="'/details/' + ${el.id}">Детальнее</a>
+<main class="container-fluid">
+    <div class="row">
+            <div class="col">
+                <div class="alert-info">
+                    <a class="p-2 text-dark" href="/sendMessage">Отправить сообщение</a><br>
+                    <a class="p-2 text-dark" href="/inbox">Входящие</a><br>
+                    <a class="p-2 text-dark" href="/sent">Исходящие</a><br>
+                    <a class="p-2 text-dark" href="/addNews">Добавить новость</a><br>
                 </div>
             </div>
-        </div>
+
+
+
+            <div class="col-8">
+                <h2>Новости</h2>
+                <br>
+                <div class="row dark mb-2">
+                    <div th:each="el : ${block}" class="col-md-6">
+                        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-2 ml-1 mr-1 mt-2 shadow-sm h-md-250 position-relative">
+                            <div class="col p-4 d-flex flex-column position-static alert-primary">
+                                <h3 th:text="${el.title}"/>
+                                <div th:text="${el.autor_name}" class="mb-1 text-muted"/>
+                                <p th:text="${el.annotation}"/>
+                                <a th:href="'/details/' + ${el.id}">Детальнее</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="col">
+                <div class="bg-danger">
+                    <div class="bg-success text-center">
+                        <p th:text="'USD ' + ${usd}" class="strong h3"/>
+                    </div>
+
+                    <div class="bg-success text-center">
+                        <p th:text="'EUR ' + ${eur}" class="strong h3"/>
+                    </div>
+                </div>
+            </div>
+
     </div>
+
+
+
+
+
 
 
 </main>
