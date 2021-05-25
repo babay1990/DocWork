@@ -1,24 +1,13 @@
 package com.shpaginWork.docWork.models;
 
+import com.shpaginWork.docWork.enums.Department;
+import com.shpaginWork.docWork.enums.Position;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
 public class Users {
-
-    public Users() {};
-
-    public Users(String name, String patronymic, String surname, String login, String password, String role, String email, String fullName) {
-        this.login = login;
-        this.password = password;
-        this.role = role;
-        this.email = email;
-        this.name = name;
-        this.patronymic = patronymic;
-        this.surname = surname;
-        this.fullName = fullName;
-
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,7 +21,28 @@ public class Users {
     private String password;
     private String role;
     private String email;
+    private Department department;
+    private Position position;
 
+
+
+    public Users() {};
+
+    public Users(String name, String patronymic, String surname, String login,
+                 String password, String role, String email, String fullName,
+                 Department department, Position position) {
+        this.login = login;
+        this.password = password;
+        this.role = role;
+        this.email = email;
+        this.name = name;
+        this.patronymic = patronymic;
+        this.surname = surname;
+        this.fullName = fullName;
+        this.department = department;
+        this.position = position;
+
+    }
 
     public String getRole() {
         return role;
@@ -104,5 +114,21 @@ public class Users {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 }

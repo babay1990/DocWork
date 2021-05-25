@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>DocWork</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="icon" href="https://1.downloader.disk.yandex.ru/preview/dc8ac5c9345ae1d421aa354458f31be6415a4fa687dab585ae39793f43a9b2b5/inf/5ROBTELSzGCVkES0r3nc0gG8pTswXGhXHfV7smltXKtepGqkD-Ki18aHdxTcr_2X5L36ETbpHQAd72Y-r4o3wA%3D%3D?uid=60646558&filename=docimg.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=60646558&tknv=v2&size=1903x937" type="image">
+</head>
+<body>
+<header  th:insert="blocks/header :: header"></header>
+
+<main class="container">
+
+    <h1>Личный кабинет пользователя</h1>
+    <br>
+
+    <div th:insert="blocks/lkMenu :: lkMenu"></div>
+
+    <h3 class="my-0 mr-md-auto font-weight-normal">Введите данные для отправки служебной записки</h3><br>
+
+    <div class="border border-dark p-4">
+        <form method="POST" enctype="multipart/form-data" action="/createSZ">
+            <table>
+                <tr><td>Загрузите служебную записку</td><td><input type="file" name="file" required/></td></tr>
+                <tr><input name="recipient" placeholder="Введите адресата" class="form-control"  list="cit" required/></tr><br>
+                <tr><input name="signer" placeholder="Введите подписанта" class="form-control"  list="cit" required/></tr><br>
+                <tr><input type="text" name="comment" placeholder="Комментарий" class="form-control"></tr><br>
+                <tr><input name="name1" placeholder="Введите согласующего" class="form-control" list="cit"/></tr><br>
+                <tr><input name="name2" placeholder="Введите согласующего" class="form-control" list="cit"/></tr><br>
+                <tr><input name="name3" placeholder="Введите согласующего" class="form-control" list="cit"/></tr><br>
+                <tr><input name="name4" placeholder="Введите согласующего" class="form-control" list="cit"/></tr><br>
+                <tr><input name="name5" placeholder="Введите согласующего" class="form-control" list="cit"/></tr><br>
+                <td></td><td><input type="submit" value="Создать служебную записку" /></td>
+                <datalist id="cit">
+                    <option th:each="el : ${block}" th:value="${el.fullName}"/>
+                </datalist>
+            </table>
+        </form>
+
+        <div th:if="${message}">
+            <h4 th:text="${message}"/>
+        </div>
+    </div>
+
+</main>
+
+
+<footer class="my-5 pt-5 text-muted text-center text-small">
+    <hr>
+    <p>DocWork by Shpagin A.S.</p>
+    <p>
+        <a href="#">Back to top</a>
+    </p>
+</footer>
+</body>
+</html>

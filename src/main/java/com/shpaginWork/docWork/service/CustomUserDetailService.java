@@ -1,4 +1,4 @@
-package com.shpaginWork.docWork;
+package com.shpaginWork.docWork.service;
 
 import com.shpaginWork.docWork.models.Users;
 import com.shpaginWork.docWork.repo.UsersRepository;
@@ -36,8 +36,8 @@ public class CustomUserDetailService implements UserDetailsService {
         return user;
     }
 
+    //Находим информацию об авторизованном пользователе и передаем в объект user
     public Users checkUser(){
-        //Находим информацию об авторизованном пользователе и передаем в объект user
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Users user = usersRepository.findByLogin(userDetails.getUsername());
         return user;

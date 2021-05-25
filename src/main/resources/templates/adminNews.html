@@ -17,6 +17,7 @@
     <div class="alert alert-info mt-2">
         <a class="p-2 text-dark" href="/admin">Панель администратора</a>
         <a class="p-2 text-dark" href="/adminUsers">Данные пользователей</a>
+        <a class="p-2 text-dark" href="/addNews">Добавить новость</a>
         <a class="p-2 text-dark" href="/adminNews">Данные новостей</a>
     </div>
     <br>
@@ -40,7 +41,7 @@
             <td th:text="${el.autor_name}"/>
 
             <td>
-                <form action="?bar3" method="post">
+                <form action="?deleteNews" method="post">
                     <button type="submit" name="title" th:value="${el.title}" >Удалить новость</button>
                 </form>
             </td>

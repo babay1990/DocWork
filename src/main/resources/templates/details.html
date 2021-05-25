@@ -11,12 +11,24 @@
 
 <main class="container">
 <br>
-    <div th:each="el : ${add}" class="alert alert-info mt-2">
-        <h2 th:text="${el.title}"/>
-        <h4 th:text="${el.annotation}"/>
-        <p th:text="${el.text}"/>
-        <p>Автор статьи:</p>
-        <a th:href="'/userDetails/' + ${el.autor_name}" th:text="${el.autor_name}"/>
+    <div th:each="el : ${add}" class="mt-2">
+        <div class="alert alert-info text-center">
+            <h2 th:text="${el.title}"/>
+        </div>
+
+        <div class="text-left">
+            <h4 th:text="${el.annotation}"/>
+        </div>
+
+        <div class="text-left lh-base">
+            <p th:text="${el.text}"/>
+        </div>
+
+
+        <div class="text-left">
+            <p>Автор статьи:</p>
+            <a th:href="'/userDetails/' + ${el.autor_name}" th:text="${el.autor_name}"/>
+        </div>
     </div>
 
 

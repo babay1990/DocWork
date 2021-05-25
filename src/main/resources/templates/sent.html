@@ -14,15 +14,7 @@
     <h1>Личный кабинет пользователя</h1>
     <br>
 
-    <div class="alert alert-info mt-2">
-        <a class="p-2 text-dark" href="/lk">Мои данные</a>
-        <a class="p-2 text-dark" href="/sendMessage">Отправить сообщение</a>
-        <a class="p-2 text-dark" href="/inbox">Входящие</a>
-        <a class="p-2 text-dark" href="/sent">Исходящие</a>
-        <a class="p-2 text-dark" href="/addNews">Добавить новость</a>
-        <a class="p-2 text-dark" href="/lkUsers">Список пользователей</a>
-    </div>
-    <br>
+    <div th:insert="blocks/lkMenu :: lkMenu"></div>
 
     <h3>Исходящие сообщения</h3>
     <br>
@@ -32,18 +24,18 @@
     <table class="table">
         <thead class="thead-dark">
         <tr>
+            <th scope="col">Номер</th>
             <th scope="col">Получатель</th>
-            <th scope="col">Сообщение</th>
-            <th scope="col">Вложения</th>
+            <th scope="col">Тема</th>
             <th scope="col">Дата</th>
 
         </tr>
         </thead>
         <tbody th:each="doc : ${resul}">
         <tr>
-            <td th:text="${doc.recipient}"/>
-            <td th:text="${doc.content}"/>
-            <td><a th:href="${doc.link}" th:text="${doc.link}" /></td>
+            <td><a th:href="'/sentMessageDetails/' + ${doc.id}" th:text="${doc.id}"/></td>
+            <td><a th:href="'/userDetails/' + ${doc.recipient}" th:text="${doc.recipient}"/></td>
+            <td th:text="${doc.messageSubject}"/>
             <td th:text="${doc.date}"/>
             <td>
                 <form action="?bar4" method="post">

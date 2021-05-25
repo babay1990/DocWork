@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>DocWork</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="icon" href="https://1.downloader.disk.yandex.ru/preview/dc8ac5c9345ae1d421aa354458f31be6415a4fa687dab585ae39793f43a9b2b5/inf/5ROBTELSzGCVkES0r3nc0gG8pTswXGhXHfV7smltXKtepGqkD-Ki18aHdxTcr_2X5L36ETbpHQAd72Y-r4o3wA%3D%3D?uid=60646558&filename=docimg.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=60646558&tknv=v2&size=1903x937" type="image">
+</head>
+<body>
+<header  th:insert="blocks/header :: header"></header>
+
+<main class="container">
+
+    <h1>Личный кабинет пользователя</h1>
+    <br>
+
+    <div th:insert="blocks/lkMenu :: lkMenu"></div>
+
+
+
+    <div class="row border border-dark p-2 alert alert-info">
+        <p class="h4" th:text="'Поручение № ' + ${assignment.id}"/>
+    </div>
+
+    <div class="row border border-dark p-2">
+        <p class="h4" th:text="'Тема: ' + ${assignment.assignmentSubject}"/>
+    </div>
+
+    <div class="row border border-dark p-2">
+        <div class="col border border-dark p-2">
+            <p class="h5">Поручение:</p>
+            <p th:text="${assignment.assingment}"/>
+        </div>
+
+        <div class="col border border-dark p-2">
+            <p class="h5 border border-dark p-2">Вложения:</p>
+            <a th:href="'/' + ${assignment.link}" th:text="${assignment.link}"/>
+            <p th:text="'Дата отправки: ' + ${assignment.date}"/>
+            <p class="h5 border border-dark p-2">Исполнитель:</p>
+            <p th:text="${assignment.executor}"/>
+
+        </div>
+
+
+        <div class="col border border-dark p-2">
+
+                <p class="h5 border border-dark p-2">Комментарий исполнителя:</p>
+                <p th:text="${assignment.comment}"/>
+                <p class="h5 border border-dark p-2">Дата выполнения:</p>
+                <p th:text="${assignment.dateOfCompletion}"/>
+
+        </div>
+
+    </div>
+    <form action="?checkAssignment" method="post">
+        <div class="row border border-dark p-2" th:if="${canDone}">
+
+
+                <div class="col">
+                    <p class="h4 text-right">Введите комментарий:</p>
+                </div>
+
+                <div class="col">
+                    <textarea name="comment" placeholder="Введите комментарий" class="form-control" required></textarea>
+                </div>
+
+                <div class="col">
+                    <button type="submit">Исполнить</button>
+                </div>
+
+
+
+        </div>
+    </form>
+
+</main>
+
+
+<footer class="my-5 pt-5 text-muted text-center text-small">
+    <hr>
+    <p>DocWork by Shpagin A.S.</p>
+    <p>
+        <a href="#">Back to top</a>
+    </p>
+</footer>
+</body>
+</html>

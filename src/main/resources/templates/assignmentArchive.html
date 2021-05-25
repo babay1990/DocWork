@@ -16,32 +16,32 @@
 
     <div th:insert="blocks/lkMenu :: lkMenu"></div>
 
-    <h3>Входящие сообщения</h3>
+    <h3>Архив поручений</h3>
     <br>
+
 
 
     <table class="table">
         <thead class="thead-dark">
         <tr>
             <th scope="col">Номер</th>
-            <th scope="col">Отправитель</th>
-            <th scope="col">Тема</th>
+            <th scope="col">Создатель</th>
+            <th scope="col">Тема поручения</th>
             <th scope="col">Дата</th>
+            <th scope="col">Исполнитель</th>
+            <th scope="col">Дата выполнения</th>
 
         </tr>
         </thead>
         <tbody th:each="doc : ${resul}">
         <tr>
-            <td><a th:href="'/messageDetails/' + ${doc.id}" th:text="${doc.id}"/></td>
-            <td><a th:href="'/userDetails/' + ${doc.sender}" th:text="${doc.sender}"/></td>
-            <td th:text="${doc.messageSubject}"/>
-            <td th:text="${doc.date}"/>
 
-            <td>
-                <form action="?bar3" method="post">
-                    <button type="submit" name="content" th:value="${doc.content}">Удалить сообщение</button>
-                </form>
-            </td>
+            <td><a th:href="'/assignmentDetails/' + ${doc.id}" th:text="${doc.id}"/></td>
+            <td th:text="${doc.sender}"/>
+            <td th:text="${doc.assignmentSubject}"/>
+            <td th:text="${doc.date}"/>
+            <td th:text="${doc.executor}"/>
+            <td th:text="${doc.dateOfCompletion}"/>
         </tr>
         </tbody>
     </table>
@@ -60,4 +60,3 @@
     </p>
 </footer>
 </body>
-</html>

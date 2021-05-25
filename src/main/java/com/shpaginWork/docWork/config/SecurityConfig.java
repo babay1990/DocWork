@@ -1,5 +1,6 @@
-package com.shpaginWork.docWork;
+package com.shpaginWork.docWork.config;
 
+import com.shpaginWork.docWork.service.CustomUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -34,16 +36,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/", "/main", "/registration").permitAll()
+                .antMatchers("/", "/main", "/registration", "/test").permitAll()
                 .antMatchers("/lk").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/admin").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and().formLogin().permitAll()
-                .loginPage("/login")
-                .loginProcessingUrl("/perform-login")
-                .usernameParameter("user")
-                .passwordParameter("pass")
-                .defaultSuccessUrl("/lk");
+                //.loginPage("/login")
+                //.loginProcessingUrl("/perform-login")
+                //.usernameParameter("user")
+                //.passwordParameter("pass")
+                .defaultSuccessUrl("/lk")
+                .and().rememberMe().key("secretkey").tokenValiditySeconds(86400).userDetailsService(this.userDetailsService);
+
     }
 
     @Override
