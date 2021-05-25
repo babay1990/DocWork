@@ -1,0 +1,24 @@
+cloud:
+  aws:
+    credentials:
+      access-key: AKIAYAUIM6LLEXKM2CAI
+      secret-key: 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
+    region:
+      static: eu-west-3
+    stack:
+      auto: false
+
+application:
+  bucket:
+    name: docworkapp
+
+
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2MB
+      max-file-size: 5MB
+      max-request-size: 10MB
+
+
