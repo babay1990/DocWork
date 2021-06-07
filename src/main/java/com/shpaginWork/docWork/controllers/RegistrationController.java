@@ -66,7 +66,9 @@ public class RegistrationController {
         String role;
         if(login.equals("babay")) role = "ADMIN";
         else role = "USER";
+
         String fullName = surname + " " + name + " " + patronymic;
+
         Users user = new Users(name, patronymic, surname, login, password, role, email, fullName, department, position);
         usersRepository.save(user);
 

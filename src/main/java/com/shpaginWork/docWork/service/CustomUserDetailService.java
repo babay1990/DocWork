@@ -38,8 +38,6 @@ public class CustomUserDetailService implements UserDetailsService {
         return user;
     }
 
-
-
     //Находим информацию об авторизованном пользователе и передаем в объект user
     public Users checkUser(){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
