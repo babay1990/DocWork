@@ -11,27 +11,39 @@
 
 <main class="container">
 
-    <div class="form-signin">
-        <form name="f" th:action="@{/perform-login}" method="post">
-            <fieldset>
-                <legend>Войдите</legend>
-                <div th:if="${param.error}" class="alert alert-error">
-                    Неправильные имя и пароль.
-                </div>
-                <div th:if="${param.logout}" class="alert alert-success">
-                    You have been logged out.
-                </div>
-                <label for="user">Имя</label>
-                <input type="text" id="user" name="user"/>
-                <label for="pass">Пароль</label>
-                <input type="password" id="pass" name="pass"/>
-                <input type="checkbox" name="remember-me"/>
-                <div class="form-actions">
-                    <button type="submit" >Войти</button>
-                </div>
-            </fieldset>
-        </form>
-    </div>
+    <h1>Личный кабинет пользователя</h1>
+    <br>
+
+    <div th:insert="blocks/lkMenu :: lkMenu"></div>
+
+    <h3>Поручения мне</h3>
+    <br>
+
+
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Номер</th>
+            <th scope="col">Отправитель</th>
+            <th scope="col">Тема поручения</th>
+            <th scope="col">Дата</th>
+
+        </tr>
+        </thead>
+        <tbody th:each="doc : ${resul}">
+        <tr>
+
+            <td><a th:href="'/assignmentDetails/' + ${doc.id}" th:text="${doc.id}"/></td>
+            <td th:text="${doc.sender}"/>
+            <td th:text="${doc.assignmentSubject}"/>
+            <td th:text="${doc.date}"/>
+
+
+        </tr>
+        </tbody>
+    </table>
+
+
 
 
 </main>

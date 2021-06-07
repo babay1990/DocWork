@@ -17,6 +17,7 @@
     <div class="alert alert-info mt-2">
         <a class="p-2 text-dark" href="/admin">Панель администратора</a>
         <a class="p-2 text-dark" href="/adminUsers">Данные пользователей</a>
+        <a class="p-2 text-dark" href="/addNews">Добавить новость</a>
         <a class="p-2 text-dark" href="/adminNews">Данные новостей</a>
     </div>
     <br>
@@ -33,6 +34,9 @@
             <th scope="col">Пароль</th>
             <th scope="col">Роль</th>
             <th scope="col">Email</th>
+            <th scope="col">Отдел</th>
+            <th scope="col">Должность</th>
+
         </tr>
         </thead>
         <tbody th:each="el : ${block}">
@@ -46,14 +50,16 @@
             <td th:text="${el.password}"/>
             <td th:text="${el.role}"/>
             <td th:text="${el.email}"/>
+            <td th:text="${el.department}"/>
+            <td th:text="${el.position}"/>
             <td>
-                <form action="?bar2" method="post">
+                <form action="?deleteUser" method="post">
                     <button type="submit" name="login" th:value="${el.login}" >Удалить пользователя</button>
                 </form>
             </td>
 
             <td>
-                <form action="?bar" method="post">
+                <form action="?setAdminRole" method="post">
                     <button type="submit" name="login" th:value="${el.login}" >Назначить администратором</button>
                 </form>
             </td>

@@ -26,7 +26,7 @@ public class AdminController {
     //Вход на страницу администратора
     //На ней отображаем количество зарегестрированных пользователей и количество размещенных новостей
     @GetMapping("/admin")
-    public String enter(Model model){
+    public String getAdmin(Model model){
 
         //помещаем всех пользователей в arraylist и находим его размер
         Iterable<Users> all = usersRepository.findAll();
@@ -50,7 +50,7 @@ public class AdminController {
     //Вход на страницу adminUsers
     //На странице отображаются данные всех зарегестрированных пользователей
     @GetMapping("/adminUsers")
-    public String enterAdminUsers(Model model) {
+    public String getAdminUsers(Model model) {
 
         //Передаем объект Iterable, содержащий всех пользователей, на страницу
         Iterable<Users> block = usersRepository.findAll();
@@ -59,8 +59,8 @@ public class AdminController {
     }
 
     //Метод для обработки формы удаления пользователя
-    @PostMapping(value = "/adminUsers", params = "bar2")
-    public String changUsersParametrs(@RequestParam String login, Model model) {
+    @PostMapping(value = "/adminUsers", params = "deleteUser")
+    public String deleteUser(@RequestParam String login, Model model) {
 
         //находим пользователя в базе по полученному логину и удаляем
         Users user = usersRepository.findByLogin(login);
@@ -69,8 +69,8 @@ public class AdminController {
     }
 
     //метод для обработки формы присвоения роли админа
-    @PostMapping(value = "/adminUsers", params = "bar")
-    public String changeRole(@RequestParam String login, Model model) {
+    @PostMapping(value = "/adminUsers", params = "setAdminRole")
+    public String setAdminRole(@RequestParam String login, Model model) {
 
         //по переданному из формы логину находим пользователя и присваиваем ему роль ADMIN
         Users user = usersRepository.findByLogin(login);
@@ -88,7 +88,7 @@ public class AdminController {
     }
 
     //Метод для обработки формы удаления новости
-    @PostMapping(value = "/adminNews", params = "bar3")
+    @PostMapping(value = "/adminNews", params = "deleteNews")
     public String deleteNews (@RequestParam String title, Model model) {
 
         //находим новость по полученному названию и удаляем из базы

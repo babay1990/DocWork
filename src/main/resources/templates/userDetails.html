@@ -10,16 +10,17 @@
 <header  th:insert="blocks/header :: header"></header>
 
 <main class="container">
+    <h1>Личный кабинет пользователя</h1>
     <br>
 
-    <h3 th:text="${user.fullName}"/><br>
+    <div th:insert="blocks/lkMenu :: lkMenu"></div>
 
     <table class="table">
         <thead class="thead-dark">
         <tr>
             <th scope="col">ФИО</th>
-            <th scope="col">Логин</th>
-            <th scope="col">Права доступа</th>
+            <th scope="col">Должность</th>
+            <th scope="col">Отдел</th>
             <th scope="col">Email</th>
 
         </tr>
@@ -27,8 +28,8 @@
         <tbody>
         <tr>
             <td th:text="${user.fullName}"/>
-            <td th:text="${user.login}"/>
-            <td th:text="${user.role}"/>
+            <td th:text="${user.position}"/>
+            <td th:text="${user.department}"/>
             <td th:text="${user.email}"/>
         </tr>
         </tbody>

@@ -11,27 +11,39 @@
 
 <main class="container">
 
-    <div class="form-signin">
-        <form name="f" th:action="@{/perform-login}" method="post">
-            <fieldset>
-                <legend>Войдите</legend>
-                <div th:if="${param.error}" class="alert alert-error">
-                    Неправильные имя и пароль.
-                </div>
-                <div th:if="${param.logout}" class="alert alert-success">
-                    You have been logged out.
-                </div>
-                <label for="user">Имя</label>
-                <input type="text" id="user" name="user"/>
-                <label for="pass">Пароль</label>
-                <input type="password" id="pass" name="pass"/>
-                <input type="checkbox" name="remember-me"/>
-                <div class="form-actions">
-                    <button type="submit" >Войти</button>
-                </div>
-            </fieldset>
-        </form>
-    </div>
+    <h1>Личный кабинет пользователя</h1>
+    <br>
+
+    <div th:insert="blocks/lkMenu :: lkMenu"></div>
+
+
+    <h3>Результаты поиска</h3><br>
+
+
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Имя</th>
+            <th scope="col">Отчество</th>
+            <th scope="col">Фамилия</th>
+            <th scope="col">Email</th>
+            <th scope="col">Отдел</th>
+            <th scope="col">Должность</th>
+        </tr>
+        </thead>
+        <tbody th:each="el : ${resul}">
+        <tr>
+
+            <td th:text="${el.name}"/>
+            <td th:text="${el.patronymic}"/>
+            <td th:text="${el.surname}"/>
+            <td th:text="${el.email}"/>
+            <td th:text="${el.department}"/>
+            <td th:text="${el.position}"/>
+
+        </tr>
+        </tbody>
+    </table>
 
 
 </main>

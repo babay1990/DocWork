@@ -1,5 +1,7 @@
 package com.shpaginWork.docWork.controllers;
 
+import com.shpaginWork.docWork.enums.Department;
+import com.shpaginWork.docWork.enums.Position;
 import com.shpaginWork.docWork.models.Users;
 import com.shpaginWork.docWork.repo.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +24,23 @@ public class RegistrationController {
     //страница регистрации
     @GetMapping("/registration")
     public String registration(Model model) {
+
+        Department[] departmentList = Department.getList();
+        model.addAttribute("departmentList", departmentList);
+
+        Position[] positionList = Position.getList();
+        model.addAttribute("positionList", positionList);
+
         return "registration";
     }
 
 
     //метод обработки формы регистрации
     @PostMapping("/registration")
-    public String addNewUser(@RequestParam String name, @RequestParam String patronymic, @RequestParam String surname, @RequestParam String login, @RequestParam String password, @RequestParam String email, Model model, RedirectAttributes redirectAttributes){
+    public String addNewUser(@RequestParam String name, @RequestParam String patronymic,
+                             @RequestParam String surname, @RequestParam String login, @RequestParam String password,
+                             @RequestParam String email, @RequestParam Department department, @RequestParam Position position,
+                             Model model, RedirectAttributes redirectAttributes){
 
         //Первоначально делается проверка, недопускающая повторения уже существующего логина
         //через Iterable находим все пользователей и заносим их в ArrayList
@@ -54,8 +66,8 @@ public class RegistrationController {
         String role;
         if(login.equals("babay")) role = "ADMIN";
         else role = "USER";
-        String fullName = name + " " + patronymic + " " + surname;
-        Users user = new Users(name, patronymic, surname, login, password, role, email, fullName);
+        String fullName = surname + " " + name + " " + patronymic;
+        Users user = new Users(name, patronymic, surname, login, password, role, email, fullName, department, position);
         usersRepository.save(user);
 
         return "goodlogin";

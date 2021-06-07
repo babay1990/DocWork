@@ -14,37 +14,41 @@
     <h1>Личный кабинет пользователя</h1>
     <br>
 
-    <div class="alert alert-info mt-2">
-        <a class="p-2 text-dark" href="/lk">Мои данные</a>
-        <a class="p-2 text-dark" href="/sendMessage">Отправить сообщение</a>
-        <a class="p-2 text-dark" href="/inbox">Входящие</a>
-        <a class="p-2 text-dark" href="/sent">Исходящие</a>
-        <a class="p-2 text-dark" href="/addNews">Добавить новость</a>
-        <a class="p-2 text-dark" href="/lkUsers">Список пользователей</a>
-    </div>
-    <br>
+    <div th:insert="blocks/lkMenu :: lkMenu"></div>
 
 
-    <h3>Список пользователей</h3>
+    <h3>Список пользователей</h3><br>
+
+
+    <div class="row ml-3">
+        <form action="?searchByUserName" method="post">
+            <div class="row">
+                <div><input type="text" name="name" placeholder="Поиск по ФИО" class="form-control" size="50" required></div><br>
+                <div><button type="submit">Найти</button></div>
+            </div>
+        </form>
+    </div><br>
 
     <table class="table">
         <thead class="thead-dark">
         <tr>
-            <th scope="col">Логин</th>
             <th scope="col">Имя</th>
             <th scope="col">Отчество</th>
             <th scope="col">Фамилия</th>
             <th scope="col">Email</th>
+            <th scope="col">Отдел</th>
+            <th scope="col">Должность</th>
         </tr>
         </thead>
         <tbody th:each="el : ${block}">
         <tr>
 
-            <td th:text="${el.login}"/>
             <td th:text="${el.name}"/>
             <td th:text="${el.patronymic}"/>
             <td th:text="${el.surname}"/>
             <td th:text="${el.email}"/>
+            <td th:text="${el.department}"/>
+            <td th:text="${el.position}"/>
 
         </tr>
         </tbody>
