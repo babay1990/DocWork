@@ -1,14 +1,13 @@
 package com.shpaginWork.docWork.controllers;
 
-import com.shpaginWork.docWork.enums.Department;
-import com.shpaginWork.docWork.models.Sent;
+
 import com.shpaginWork.docWork.service.AssignmentService;
 import com.shpaginWork.docWork.service.CustomUserDetailService;
 import com.shpaginWork.docWork.models.Assignment;
 import com.shpaginWork.docWork.models.Users;
 import com.shpaginWork.docWork.repo.AssignmentRepository;
 import com.shpaginWork.docWork.repo.UsersRepository;
-import com.shpaginWork.docWork.service.StorageService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,9 +28,6 @@ public class AssignmentController {
 
     @Autowired
     private UsersRepository usersRepository;
-
-    @Autowired
-    private StorageService service;
 
     @Autowired
     private CustomUserDetailService userService;
@@ -55,37 +51,14 @@ public class AssignmentController {
     //отправка поручения
     @PostMapping("/createAssignment")
     public String postCreateAssignment(@RequestParam("file") MultipartFile file, @RequestParam String executor,
-                                 @RequestParam String assignment, @RequestParam String assignmentSubject,
-                                 RedirectAttributes redirectAttributes) {
+                                 @RequestParam String assignment, @RequestParam String assignmentSubject, RedirectAttributes redirectAttributes) {
 
-        //если файл не пустой, то присваиваем ему имя, сохраняем в amazon S3 и
-        //в базу передаем поручение вместе с ссылкой на файл
-        if(!file.isEmpty()){
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            service.uploadFile(file, fileName);
-
-            Users user = userService.checkUser();
-
-            Date date = new Date();
-
-            Assignment newAssignment = new Assignment(user.getFullName(), executor, assignment, fileName, date, assignmentSubject);
-
-            assignmentRepository.save(newAssignment);
-
-            return "redirect:/lk";
-        }
-        //если файл пустой, то отправляем пользователю поручение без файла
+        if(userService.checkUserByFullName(executor))
+        return assignmentService.createAssignment(file, executor, assignment, assignmentSubject);
         else {
-
-            Users user = userService.checkUser();
-
-            Date date = new Date();
-
-            Assignment newAssignment = new Assignment(user.getFullName(), executor, assignment, date, assignmentSubject);
-
-            assignmentRepository.save(newAssignment);
-
-            return "redirect:/lk";
+            redirectAttributes.addFlashAttribute("message",
+                    "Выбранный исполнитель не существует. Попробуйте снова.");
+            return "redirect:/createAssignment";
         }
     }
 
@@ -105,9 +78,9 @@ public class AssignmentController {
 
 
         //вносим в отдельный arraylist все поручения, в коорых имя пользователя совпадает с именем получателя
-        for(int i = 0; i < ar.size(); i++){
-            if(ar.get(i).getExecutor().equals(user.getFullName()) && !ar.get(i).isStatus()){
-                resul.add(ar.get(i));
+        for (Assignment assignment : ar) {
+            if (assignment.getExecutor().equals(user.getFullName()) && !assignment.isStatus()) {
+                resul.add(assignment);
             }
         }
         //передаем arraylist на страницу
@@ -128,9 +101,9 @@ public class AssignmentController {
         ArrayList<Assignment> ar = assignmentService.getList();
 
         //вносим в отдельный arraylist все поручения, в коорых имя пользователя совпадает с именем отправителя
-        for(int i = 0; i < ar.size(); i++){
-            if(ar.get(i).getSender().equals(user.getFullName())){
-                resul.add(ar.get(i));
+        for (Assignment assignment : ar) {
+            if (assignment.getSender().equals(user.getFullName())) {
+                resul.add(assignment);
             }
         }
         //передаем arraylist на страницу
@@ -151,9 +124,9 @@ public class AssignmentController {
         ArrayList<Assignment> ar = assignmentService.getList();
 
         //вносим в отдельный arraylist все поручения, в коорых имя пользователя совпадает с именем отправителя
-        for(int i = 0; i < ar.size(); i++){
-            if(ar.get(i).getSender().equals(user.getFullName()) || ar.get(i).getExecutor().equals(user.getFullName())){
-                resul.add(ar.get(i));
+        for (Assignment assignment : ar) {
+            if (assignment.getSender().equals(user.getFullName()) || assignment.getExecutor().equals(user.getFullName())) {
+                resul.add(assignment);
             }
         }
         //передаем arraylist на страницу
@@ -163,35 +136,51 @@ public class AssignmentController {
 
     //метод просмотра деталей поручений
     @GetMapping("/assignmentDetails/{id}")
-    public String sentMessageDetails(@PathVariable(value = "id") Long id, Model model){
+    public String sentMessageDetails(@PathVariable(value = "id") Long id, Model model, RedirectAttributes redirectAttributes){
 
         Users user = userService.checkUser();
 
         Optional<Assignment> op = assignmentRepository.findById(id);
-        Assignment assignment = op.get();
-        model.addAttribute("assignment", assignment);
+        if(op.isPresent()) {
+            Assignment assignment = op.get();
+            model.addAttribute("assignment", assignment);
 
-        if(user.getFullName().equals(assignment.getExecutor()) && !assignment.isStatus()) {
-            model.addAttribute("canDone", user);
+            if (user.getFullName().equals(assignment.getExecutor()) && !assignment.isStatus()) {
+                model.addAttribute("canDone", user);
+            }
+
+
+            return "assignmentDetails";
         }
-
-
-        return "assignmentDetails";
+        else {
+            redirectAttributes.addFlashAttribute("message",
+                    "Произошла ошибка. Обратитесь в службу поддержки.");
+            return "redirect:/assignmentArchive";
+        }
     }
 
     @PostMapping(value = "/assignmentDetails/{id}", params = "checkAssignment")
-    public String doneAssignment(@PathVariable(value = "id") Long id, @RequestParam String comment, Model model) {
+    public String doneAssignment(@PathVariable(value = "id") Long id, @RequestParam String comment, Model model,
+                                 RedirectAttributes redirectAttributes) {
 
         Optional<Assignment> op = assignmentRepository.findById(id);
-        Assignment assignment = op.get();
+        if(op.isPresent()){
+            Assignment assignment = op.get();
 
-        Date date = new Date();
-        assignment.setDateOfCompletion(date);
-        assignment.setComment(comment);
-        assignment.setStatus(true);
-        assignmentRepository.save(assignment);
+            Date date = new Date();
+            assignment.setDateOfCompletion(date);
+            assignment.setComment(comment);
+            assignment.setStatus(true);
+            assignmentRepository.save(assignment);
 
-        return "assignmentArchive";
+            return "assignmentArchive";
+        }
+
+        else {
+            redirectAttributes.addFlashAttribute("message",
+                    "Произошла ошибка. Обратитесь в службу поддержки.");
+            return "redirect:/assignmentArchive";
+        }
     }
 
 }

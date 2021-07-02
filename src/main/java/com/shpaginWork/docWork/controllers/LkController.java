@@ -25,9 +25,6 @@ public class LkController {
     private UsersRepository usersRepository;
 
     @Autowired
-    private NewsRepository newsRepository;
-
-    @Autowired
     private StorageService service;
 
     @Autowired
@@ -48,99 +45,43 @@ public class LkController {
     @Autowired
     private NotesService notesService;
 
+    //главная (личный кабинет)
+    @GetMapping("/")
+    public String main(Model model){
+
+        //вычисляем количество непрочитанных сообщений и передаем на страницу
+        model.addAttribute("messages", messageService.getInboxListForCurrentUser().size());
+
+        //вычисляем количество невыполненных поручений и передаем на страницу
+        model.addAttribute("assigments", assignmentService.getAssignmentListForCurrentUser().size());
+
+        //передача на страницу количества СЗ где требуется согласование или утверждение текущего user
+        model.addAttribute("notesNamesCount", notesService.getNotesNamesListForCurrentUser());
+        model.addAttribute("notesSignerCount", notesService.getNotesSignerListForCurrentUser());
+
+        return "lk";
+    }
 
     //страница с данными
     @GetMapping("/lk")
     public String lk(Model model){
 
-        Users user = userService.checkUser();
+        //вычисляем количество непрочитанных сообщений и передаем на страницу
+        model.addAttribute("messages", messageService.getInboxListForCurrentUser().size());
 
-        //лист, в который будут добавлены все непрочитанные сообщения
-        ArrayList<Inbox> resul = new ArrayList<>();
+        //вычисляем количество невыполненных поручений и передаем на страницу
+        model.addAttribute("assigments", assignmentService.getAssignmentListForCurrentUser().size());
 
-        // находим все входящие сообщения и добавляем в лист ar
-        ArrayList<Inbox> ar = messageService.getInboxList();
-
-        //вносим в resul все документы, в которых имя пользователя совпадает с именем получателя
-        //и в которых отметка о прочитанном сообщении false
-        for(int i = 0; i < ar.size(); i++){
-            if(ar.get(i).getRecipient().equals(user.getFullName()) && !ar.get(i).isCheckMessage()){
-                resul.add(ar.get(i));
-            }
-        }
-
-        //вычисляем размер листа и передаем значение счетчика на страницу
-        int inboxCount = resul.size();
-        model.addAttribute("messages", inboxCount);
-
-
-
-        // передаем на страницу количество невыполненных поручений
-        // лист с поручениями юзеру, который передается на страницу
-        ArrayList<Assignment> resulAs = new ArrayList<>();
-
-        //находим все поручения и помещаем в лист arAs
-        ArrayList<Assignment> arAs = assignmentService.getList();
-
-        // вносим в лист все поручения, в которых имя пользователя совпадает с именем получателя
-        // и отметка о выполнении поручения false
-        for(int i = 0; i < arAs.size(); i++){
-            if(arAs.get(i).getExecutor().equals(user.getFullName()) && !arAs.get(i).isStatus()){
-                resulAs.add(arAs.get(i));
-            }
-        }
-
-        //вычисляем размер листа и передаем значение счетчика на страницу
-        int assigments = resulAs.size();
-        model.addAttribute("assigments", assigments);
-
-
-        //передача на страницу СЗ где требуется согласование или утверждение
-
-        // счетчики
-        int notesNamesCount = 0;
-        int notesSignerCount = 0;
-
-        // лист list будет передан на страницу как список СЗ, в которых присутствует пользователь
-        ArrayList<Notes> list = new ArrayList<>();
-
-        //получаем список всех служебных записок
-        ArrayList<Notes> arNotes = notesService.getList();
-
-        for(int i = 0; i < arNotes.size(); i++) {
-
-            // заполняем лист checks значениями согласовано/не согласовано конкретной СЗ
-            ArrayList<Boolean> checks = new ArrayList<>(arNotes.get(i).getMap().values());
-
-            // заполняем лист allNames именами согласующих СЗ
-            ArrayList<String> allNames = notesService.getNamesList(arNotes.get(i));
-
-            // теперь есть лист с чеками checks и лист с именами согласующих allNames
-            // если имя согласующего совпадает с именем юзера и отметка согласующего false
-            // то увеличиваем счетчик "на согласование"
-            for(int j = 0; j < allNames.size(); j++) {
-                if(allNames.get(j).equals(user.getFullName()) && !checks.get(j)) {
-                    notesNamesCount++;
-                }
-            }
-
-            // если имя подписанта совпадает с именем юзера, все отметки согласования не содержат false
-            // и отметка утверждения документа false, то увеличиваем счетчик "на утверждение"
-            if(arNotes.get(i).getSigner().equals(user.getFullName()) && !arNotes.get(i).isCheck() && !checks.contains(false)) {
-                notesSignerCount++;
-            }
-        }
-
-        // передаем значения счетчиков на страницу
-        model.addAttribute("notesNamesCount", notesNamesCount);
-        model.addAttribute("notesSignerCount", notesSignerCount);
+        //передача на страницу количества СЗ где требуется согласование или утверждение текущего user
+        model.addAttribute("notesNamesCount", notesService.getNotesNamesListForCurrentUser());
+        model.addAttribute("notesSignerCount", notesService.getNotesSignerListForCurrentUser());
 
         return "lk";
     }
 
     //страница отправки сообщения
     @GetMapping("/sendMessage")
-    public String enterSendMessages(Model model) {
+    public String getSendMessages(Model model) {
 
         //передаем на страницу всех пользователей для поиска получателя
         Iterable<Users> block = usersRepository.findAll();
@@ -154,38 +95,14 @@ public class LkController {
                               @RequestParam String content, @RequestParam String messageSubject,
                               RedirectAttributes redirectAttributes) {
 
-        //если файл не пустой, то присваиваем ему имя, сохраняем в amazon S3 и в базе данных
-        //в базу передаем отправителя, получателя, описание сообщения, имя файла и дату отправки
-        if(!file.isEmpty()){
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            service.uploadFile(file, fileName);
-
-            Users user = userService.checkUser();
-
-            Date date = new Date();
-
-            Inbox inbox = new Inbox(user.getFullName(), recipient, content, fileName, date, false, messageSubject);
-            Sent sent = new Sent(user.getFullName(), recipient, content, fileName, date, messageSubject);
-
-            inboxRepository.save(inbox);
-            sentRepository.save(sent);
-
-            return "redirect:/sent";
+        if(userService.checkUserByFullName(recipient)){
+            return messageService.sendMessage(file, recipient, content, messageSubject);
         }
-        //если файл пустой, то отправляем пользователю сообщение на страницу
+
         else {
-
-            Users user = userService.checkUser();
-
-            Date date = new Date();
-
-            Inbox inbox = new Inbox(user.getFullName(), recipient, content, date, false, messageSubject);
-            Sent sent = new Sent(user.getFullName(), recipient, content, date, messageSubject);
-
-            inboxRepository.save(inbox);
-            sentRepository.save(sent);
-
-            return "redirect:/sent";
+            redirectAttributes.addFlashAttribute("message",
+                    "Выбранного получателя не существует. Пожалуйста, введите корректные данные.");
+            return "redirect:/sendMessage";
         }
     }
 
@@ -203,9 +120,9 @@ public class LkController {
         ArrayList<Inbox> ar = messageService.getInboxList();
 
         //вносим в лист resul все документы, в коорых имя пользователя совпадает с именем получателя
-        for(int i = 0; i < ar.size(); i++){
-            if(ar.get(i).getRecipient().equals(user.getFullName())){
-                resul.add(ar.get(i));
+        for (Inbox inbox : ar) {
+            if (inbox.getRecipient().equals(user.getFullName())) {
+                resul.add(inbox);
             }
         }
         //передаем arraylist на страницу
@@ -227,9 +144,9 @@ public class LkController {
         ArrayList<Sent> ar = messageService.getSentList();
 
         //вносим в отдельный arraylist все документы, в коорых имя пользователя совпадает с именем отправителя
-        for(int i = 0; i < ar.size(); i++){
-            if(ar.get(i).getSender().equals(user.getFullName())){
-                resul.add(ar.get(i));
+        for (Sent sent : ar) {
+            if (sent.getSender().equals(user.getFullName())) {
+                resul.add(sent);
             }
         }
         //передаем arraylist на страницу
@@ -237,28 +154,9 @@ public class LkController {
         return "sent";
     }
 
-    //страница "добавление новости"
-    @GetMapping("/addNews")
-    public String enterAddNews(Model model) {
-        return "addNews";
-    }
-
-    //добавление новости
-    @PostMapping("/addNews")
-    public String addNews(@RequestParam String title, @RequestParam String annotation, @RequestParam String text, Model model){
-
-        //находим пользователя
-        Users user = userService.checkUser();
-
-        //передаем параметры, полученные со страницу и записываем их в базу данных новостей
-        News news = new News(title, annotation, text, user.getLogin(), user.getName() + " " + user.getPatronymic() + " " + user.getSurname());
-        newsRepository.save(news);
-        return "redirect:/main";
-    }
-
     //страница со списком пользователей
     @GetMapping("/lkUsers")
-    public String enterLkUsers(Model model) {
+    public String getLkUsers(Model model) {
 
         //Передаем объект Iterable, содержащий всех пользователей, на страницу
         Iterable<Users> block = usersRepository.findAll();
@@ -277,39 +175,6 @@ public class LkController {
                 .header("Content-type", "application/octet-stream")
                 .header("Content-disposition", "attachment; filename=\"" + fileName + "\"")
                 .body(resource);
-    }
-
-    //страница изменения личных данных
-    @GetMapping("/change")
-    public String change(Model model){
-
-        //находим пользователя
-        Users user = userService.checkUser();
-
-        //передаем на страницу объект user
-        model.addAttribute("user", user);
-        return "change";
-    }
-
-    //изменение личных данных пользователя
-    @PostMapping("/change")
-    public String changeParam(@RequestParam String name, @RequestParam String patronymic,
-                              @RequestParam String surname, @RequestParam String login,
-                              @RequestParam String password, @RequestParam String email, Model model){
-
-        //находим пользователя
-        Users user = userService.checkUser();
-
-        //передаем параметры, полученные со страницы и сохраняем измененные данные в базе данных
-        user.setName(name);
-        user.setPatronymic(patronymic);
-        user.setSurname(surname);
-        user.setLogin(login);
-        user.setPassword(password);
-        user.setEmail(email);
-        user.setFullName(name + " " + patronymic + " " + surname);
-        usersRepository.save(user);
-        return "redirect:/lk";
     }
 
     //метод удаления входящих сообщений
@@ -332,7 +197,7 @@ public class LkController {
 
     //метод просмотра данных отправителя
     @GetMapping("/userDetails/{sender}")
-    public String details(@PathVariable(value = "sender") String sender, Model model){
+    public String senderDetails(@PathVariable(value = "sender") String sender, Model model){
 
         Users user = usersRepository.findByFullName(sender);
         model.addAttribute("user", user);
@@ -341,24 +206,38 @@ public class LkController {
 
     //метод просмотра деталей входящих сообщений
     @GetMapping("/messageDetails/{id}")
-    public String messageDetails(@PathVariable(value = "id") Long id, Model model){
+    public String inboxMessageDetails(@PathVariable(value = "id") Long id, Model model, RedirectAttributes redirectAttributes){
 
         Optional<Inbox> op = inboxRepository.findById(id);
-        Inbox message = op.get();
-        message.setCheckMessage(true);
-        inboxRepository.save(message);
-        model.addAttribute("message", message);
-        return "messageDetails";
+        if(op.isPresent()){
+            Inbox message = op.get();
+            message.setCheckMessage(true);
+            inboxRepository.save(message);
+            model.addAttribute("message", message);
+            return "messageDetails";
+        }
+        else {
+            redirectAttributes.addFlashAttribute("message",
+                    "Произошла ошибка. Обратитесь в службу поддержки.");
+            return "redirect:/inbox";
+        }
     }
 
     //метод просмотра деталей исходящих сообщений
     @GetMapping("/sentMessageDetails/{id}")
-    public String sentMessageDetails(@PathVariable(value = "id") Long id, Model model){
+    public String sentMessageDetails(@PathVariable(value = "id") Long id, Model model, RedirectAttributes redirectAttributes){
 
         Optional<Sent> op = sentRepository.findById(id);
-        Sent message = op.get();
-        model.addAttribute("message", message);
-        return "sentMessageDetails";
+        if(op.isPresent()){
+            Sent message = op.get();
+            model.addAttribute("message", message);
+            return "sentMessageDetails";
+        }
+        else{
+            redirectAttributes.addFlashAttribute("message",
+                    "Произошла ошибка. Обратитесь в службу поддержки.");
+            return "redirect:/sent";
+        }
     }
 
     //метод поиска по имени

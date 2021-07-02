@@ -4,6 +4,7 @@ import com.shpaginWork.docWork.models.News;
 import com.shpaginWork.docWork.models.Users;
 import com.shpaginWork.docWork.repo.NewsRepository;
 import com.shpaginWork.docWork.repo.UsersRepository;
+import com.shpaginWork.docWork.service.CustomUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,9 @@ public class AdminController {
 
     @Autowired
     NewsRepository newsRepository;
+
+    @Autowired
+    CustomUserDetailService userService;
 
     //Вход на страницу администратора
     //На ней отображаем количество зарегестрированных пользователей и количество размещенных новостей
@@ -96,4 +100,58 @@ public class AdminController {
         newsRepository.delete(news);
         return "redirect:/adminNews";
     }
+
+    //страница "добавление новости"
+    @GetMapping("/addNews")
+    public String enterAddNews(Model model) {
+        return "addNews";
+    }
+
+    //добавление новости
+    @PostMapping("/addNews")
+    public String addNews(@RequestParam String title, @RequestParam String annotation, @RequestParam String text, Model model){
+
+        //находим пользователя
+        Users user = userService.checkUser();
+
+        //передаем параметры, полученные со страницу и записываем их в базу данных новостей
+        News news = new News(title, annotation, text, user.getLogin(), user.getName() + " " + user.getPatronymic() + " " + user.getSurname());
+        newsRepository.save(news);
+        return "redirect:/main";
+    }
+
+    //страница изменения личных данных
+    @GetMapping("/change")
+    public String change(Model model){
+
+        //находим пользователя
+        Users user = userService.checkUser();
+
+        //передаем на страницу объект user
+        model.addAttribute("user", user);
+        return "change";
+    }
+
+    //изменение личных данных пользователя
+    @PostMapping("/change")
+    public String changeParam(@RequestParam String name, @RequestParam String patronymic,
+                              @RequestParam String surname, @RequestParam String login,
+                              @RequestParam String password, @RequestParam String email, Model model){
+
+        //находим пользователя
+        Users user = userService.checkUser();
+
+        //передаем параметры, полученные со страницы и сохраняем измененные данные в базе данных
+        user.setName(name);
+        user.setPatronymic(patronymic);
+        user.setSurname(surname);
+        user.setLogin(login);
+        user.setPassword(password);
+        user.setEmail(email);
+        user.setFullName(name + " " + patronymic + " " + surname);
+        usersRepository.save(user);
+        return "redirect:/lk";
+    }
+
+
 }

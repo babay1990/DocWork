@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 public class NotesController {
@@ -128,6 +125,14 @@ public class NotesController {
        }
 
         // отправляем список СЗ, в которых участвует пользователь, на страницу
+        Collections.sort(list, new Comparator<Notes>() {
+            @Override
+            public int compare(Notes notes, Notes t1) {
+                if (notes.getId() == t1.getId()) return 0;
+                else if (notes.getId() < t1.getId()) return 1;
+                else return -1;
+            }
+        });
         model.addAttribute("list", list);
 
         return "myNotes";

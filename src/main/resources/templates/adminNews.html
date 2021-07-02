@@ -11,17 +11,13 @@
 
 <main class="container">
 
-    <h1>Список новостей</h1>
+    <h1>Панель администратора</h1>
     <br>
 
-    <div class="alert alert-info mt-2">
-        <a class="p-2 text-dark" href="/admin">Панель администратора</a>
-        <a class="p-2 text-dark" href="/adminUsers">Данные пользователей</a>
-        <a class="p-2 text-dark" href="/addNews">Добавить новость</a>
-        <a class="p-2 text-dark" href="/adminNews">Данные новостей</a>
-    </div>
-    <br>
+    <div th:insert="blocks/adminMenu :: adminMenu"></div>
 
+    <h2>Список новостей</h2>
+    <br>
 
     <table class="table">
         <thead class="thead-dark">

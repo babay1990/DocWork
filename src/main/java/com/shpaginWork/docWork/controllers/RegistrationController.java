@@ -5,6 +5,7 @@ import com.shpaginWork.docWork.enums.Position;
 import com.shpaginWork.docWork.models.Users;
 import com.shpaginWork.docWork.repo.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,9 @@ import java.util.ArrayList;
 //контроллер регистрации
 @Controller
 public class RegistrationController {
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     private UsersRepository usersRepository;
@@ -52,8 +56,8 @@ public class RegistrationController {
         //сравниваем логин существующих пользователей и логин
         //переданный из формы. В случае совпадения выводим на страницу сообщение
         //в котором просим пользователя ввести другие данные
-        for(int i = 0; i < list.size(); i++){
-            if(list.get(i).getLogin().equals(login)){
+        for (Users users : list) {
+            if (users.getLogin().equals(login)) {
                 redirectAttributes.addFlashAttribute("message",
                         "Выбранный логин уже занят! Попробуйте придумать новый!");
                 return "redirect:/registration";
@@ -69,9 +73,15 @@ public class RegistrationController {
 
         String fullName = surname + " " + name + " " + patronymic;
 
-        Users user = new Users(name, patronymic, surname, login, password, role, email, fullName, department, position);
+        Users user = new Users(name, patronymic, surname, login, bCryptPasswordEncoder.encode(password), role, email, fullName, department, position);
         usersRepository.save(user);
 
         return "goodlogin";
+    }
+
+    //страница авторизации
+    @GetMapping("/login")
+    public String get(Model model) {
+        return "login";
     }
 }

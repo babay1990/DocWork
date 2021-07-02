@@ -11,17 +11,13 @@
 
 <main class="container">
 
-    <h1>Список зарегестрированных пользователей</h1>
+    <h1>Панель администратора</h1>
     <br>
 
-    <div class="alert alert-info mt-2">
-        <a class="p-2 text-dark" href="/admin">Панель администратора</a>
-        <a class="p-2 text-dark" href="/adminUsers">Данные пользователей</a>
-        <a class="p-2 text-dark" href="/addNews">Добавить новость</a>
-        <a class="p-2 text-dark" href="/adminNews">Данные новостей</a>
-    </div>
-    <br>
+    <div th:insert="blocks/adminMenu :: adminMenu"></div>
 
+    <h2>Список зарегестрированных пользователей</h2>
+    <br>
 
     <table class="table">
         <thead class="thead-dark">
@@ -31,7 +27,6 @@
             <th scope="col">Отчество</th>
             <th scope="col">Фамилия</th>
             <th scope="col">Логин</th>
-            <th scope="col">Пароль</th>
             <th scope="col">Роль</th>
             <th scope="col">Email</th>
             <th scope="col">Отдел</th>
@@ -47,7 +42,6 @@
             <td th:text="${el.patronymic}"/>
             <td th:text="${el.surname}"/>
             <td th:text="${el.login}"/>
-            <td th:text="${el.password}"/>
             <td th:text="${el.role}"/>
             <td th:text="${el.email}"/>
             <td th:text="${el.department}"/>

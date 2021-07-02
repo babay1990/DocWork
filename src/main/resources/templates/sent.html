@@ -46,7 +46,10 @@
         </tbody>
     </table>
 
-
+    <div th:if="${message}">
+        <br>
+        <h4 th:text="${message}"/>
+    </div>
 
 
 </main>

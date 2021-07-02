@@ -24,7 +24,7 @@ import java.util.Optional;
 
 //контроллер главной страницы
 @Controller
-public class MainController {
+public class NewsController {
 
     @Autowired
     private NewsRepository newsRepository;
@@ -32,18 +32,15 @@ public class MainController {
     @Autowired
     private CustomUserDetailService userService;
 
-
-
     //главная страница
-    @GetMapping("/")
-    public String main(Model model) throws IOException {
+    @GetMapping("/news")
+    public String news(Model model) throws IOException {
 
         //Передаем объект Iterable, содержащий все новости, на страницу
         Iterable<News> block = newsRepository.findAll();
         model.addAttribute("block", block);
 
-
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
 
         Document doc = Jsoup.connect("https://yandex.ru/").get();
 
@@ -51,8 +48,8 @@ public class MainController {
 
         el.forEach(ell ->{
 
-            String usd = ell.child(1).text();
-            list.add(usd);
+            String element = ell.child(1).text();
+            list.add(element);
         });
 
         String usd = list.get(0);
@@ -62,19 +59,6 @@ public class MainController {
         model.addAttribute("eur", eur);
 
         list.clear();
-
-
-
-        return "main";
-    }
-
-    //главная страница(/main)
-    @GetMapping("/main")
-    public String mainC(Model model) {
-
-        //Передаем объект Iterable, содержащий все новости, на страницу
-        Iterable<News> block = newsRepository.findAll();
-        model.addAttribute("block", block);
 
         return "main";
     }
@@ -95,42 +79,4 @@ public class MainController {
 
         return "details";
     }
-
-    //страница авторизации
-    @GetMapping("/login")
-    public String get(Model model) {
-        return "login";
-    }
-
-
-    @GetMapping("/test")
-    public String test(Model model) throws IOException {
-        //Передаем объект Iterable, содержащий все новости, на страницу
-        Iterable<News> block = newsRepository.findAll();
-        model.addAttribute("block", block);
-
-
-        List<String> list = new ArrayList<String>();
-
-        Document doc = Jsoup.connect("https://yandex.ru/").get();
-
-        Elements el = doc.getElementsByAttributeValue("class", "inline-stocks__value");
-
-        el.forEach(ell ->{
-
-            String usd = ell.child(1).text();
-            list.add(usd);
-        });
-
-        String usd = list.get(0);
-        String eur = list.get(1);
-
-        model.addAttribute("usd", usd);
-        model.addAttribute("eur", eur);
-
-        list.clear();
-        return "test";
-    }
-
-
 }

@@ -31,7 +31,7 @@ public class CustomUserDetailService implements UserDetailsService {
         }
         UserDetails user = User.builder()
                 .username(myUser.getLogin())
-                .password(bCryptPasswordEncoder.encode(myUser.getPassword()))
+                .password(myUser.getPassword())
                 .roles(myUser.getRole())
                 .build();
 
@@ -61,5 +61,12 @@ public class CustomUserDetailService implements UserDetailsService {
             userNamesList.add(user);
         }
         return userNamesList;
+    }
+
+    //проверка наличия пользователя в базе данных по ФИО
+    public boolean checkUserByFullName(String fullname) {
+        Users user = usersRepository.findByFullName(fullname);
+        if(user == null) return false;
+        else return true;
     }
 }
