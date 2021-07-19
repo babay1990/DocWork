@@ -69,4 +69,10 @@ public class CustomUserDetailService implements UserDetailsService {
         if(user == null) return false;
         else return true;
     }
+
+    public boolean isAdmin(){
+        Users user = checkUser();
+        if(user.getRole().equals("ADMIN")) return true;
+        else return false;
+    }
 }

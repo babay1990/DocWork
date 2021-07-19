@@ -31,6 +31,9 @@ public class AdminController {
     //На ней отображаем количество зарегестрированных пользователей и количество размещенных новостей
     @GetMapping("/admin")
     public String getAdmin(Model model){
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         //помещаем всех пользователей в arraylist и находим его размер
         Iterable<Users> all = usersRepository.findAll();
@@ -55,6 +58,9 @@ public class AdminController {
     //На странице отображаются данные всех зарегестрированных пользователей
     @GetMapping("/adminUsers")
     public String getAdminUsers(Model model) {
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         //Передаем объект Iterable, содержащий всех пользователей, на страницу
         Iterable<Users> block = usersRepository.findAll();
@@ -86,6 +92,9 @@ public class AdminController {
     //страница для просмотра размещенных новостей
     @GetMapping("/adminNews")
     public String adminNews(Model model) {
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
         Iterable<News> block = newsRepository.findAll();
         model.addAttribute("block", block);
         return "adminNews";
@@ -104,6 +113,9 @@ public class AdminController {
     //страница "добавление новости"
     @GetMapping("/addNews")
     public String enterAddNews(Model model) {
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
         return "addNews";
     }
 
@@ -123,6 +135,9 @@ public class AdminController {
     //страница изменения личных данных
     @GetMapping("/change")
     public String change(Model model){
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         //находим пользователя
         Users user = userService.checkUser();

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 @Service
@@ -104,5 +106,32 @@ public class MessageService {
             return "redirect:/sent";
         }
     }
+
+    //метод сортировки входящих сообщений
+    public ArrayList<Inbox> sortInboxList (ArrayList<Inbox> list) {
+        Collections.sort(list, new Comparator<Inbox>() {
+            @Override
+            public int compare(Inbox notes, Inbox t1) {
+                if (notes.getId() == t1.getId()) return 0;
+                else if (notes.getId() < t1.getId()) return 1;
+                else return -1;
+            }
+        });
+        return list;
+    }
+
+    //метод сортировки входящих сообщений
+    public ArrayList<Sent> sortSentList (ArrayList<Sent> list) {
+        Collections.sort(list, new Comparator<Sent>() {
+            @Override
+            public int compare(Sent notes, Sent t1) {
+                if (notes.getId() == t1.getId()) return 0;
+                else if (notes.getId() < t1.getId()) return 1;
+                else return -1;
+            }
+        });
+        return list;
+    }
+
 
 }

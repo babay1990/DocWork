@@ -65,6 +65,9 @@ public class LkController {
     //страница с данными
     @GetMapping("/lk")
     public String lk(Model model){
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         //вычисляем количество непрочитанных сообщений и передаем на страницу
         model.addAttribute("messages", messageService.getInboxListForCurrentUser().size());
@@ -82,6 +85,9 @@ public class LkController {
     //страница отправки сообщения
     @GetMapping("/sendMessage")
     public String getSendMessages(Model model) {
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         //передаем на страницу всех пользователей для поиска получателя
         Iterable<Users> block = usersRepository.findAll();
@@ -109,6 +115,9 @@ public class LkController {
     //страница "входящие"
     @GetMapping("/inbox")
     public String inbox(Model model) {
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         //находим пользователя
         Users user = userService.checkUser();
@@ -126,6 +135,8 @@ public class LkController {
             }
         }
         //передаем arraylist на страницу
+
+        messageService.sortInboxList(resul);
         model.addAttribute("resul", resul);
         return "inbox";
     }
@@ -133,6 +144,9 @@ public class LkController {
     //страница "отправленные"
     @GetMapping("/sent")
     public String sent(Model model) {
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         //находим пользователя
         Users user = userService.checkUser();
@@ -150,6 +164,7 @@ public class LkController {
             }
         }
         //передаем arraylist на страницу
+        messageService.sortSentList(resul);
         model.addAttribute("resul", resul);
         return "sent";
     }
@@ -157,6 +172,9 @@ public class LkController {
     //страница со списком пользователей
     @GetMapping("/lkUsers")
     public String getLkUsers(Model model) {
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         //Передаем объект Iterable, содержащий всех пользователей, на страницу
         Iterable<Users> block = usersRepository.findAll();
@@ -198,15 +216,28 @@ public class LkController {
     //метод просмотра данных отправителя
     @GetMapping("/userDetails/{sender}")
     public String senderDetails(@PathVariable(value = "sender") String sender, Model model){
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         Users user = usersRepository.findByFullName(sender);
-        model.addAttribute("user", user);
-        return "userDetails";
+        if(user == null) {
+            model.addAttribute("message",
+                    "Данный пользователь не существует. Если такого не можеть быть, обратитесь в службу поддержки.");
+            return "errorPage";
+        }
+        else {
+            model.addAttribute("user", user);
+            return "userDetails";
+        }
     }
 
     //метод просмотра деталей входящих сообщений
     @GetMapping("/messageDetails/{id}")
     public String inboxMessageDetails(@PathVariable(value = "id") Long id, Model model, RedirectAttributes redirectAttributes){
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         Optional<Inbox> op = inboxRepository.findById(id);
         if(op.isPresent()){
@@ -226,6 +257,9 @@ public class LkController {
     //метод просмотра деталей исходящих сообщений
     @GetMapping("/sentMessageDetails/{id}")
     public String sentMessageDetails(@PathVariable(value = "id") Long id, Model model, RedirectAttributes redirectAttributes){
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         Optional<Sent> op = sentRepository.findById(id);
         if(op.isPresent()){

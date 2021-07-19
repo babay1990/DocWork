@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>DocWork</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="icon" href="https://1.downloader.disk.yandex.ru/preview/dc8ac5c9345ae1d421aa354458f31be6415a4fa687dab585ae39793f43a9b2b5/inf/5ROBTELSzGCVkES0r3nc0gG8pTswXGhXHfV7smltXKtepGqkD-Ki18aHdxTcr_2X5L36ETbpHQAd72Y-r4o3wA%3D%3D?uid=60646558&filename=docimg.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=60646558&tknv=v2&size=1903x937" type="image">
+</head>
+<body>
+<header  th:insert="blocks/header :: header"></header>
+
+<main class="container">
+
+    <h2>Ознакомительная регистрация</h2>
+    <form action="registrationExample" method="post">
+        <input type="text" name="name" placeholder="Введите имя" class="form-control" required><br>
+        <input type="text" name="patronymic" placeholder="Введите отчество" class="form-control" required><br>
+        <input type="text" name="surname" placeholder="Введите фамилию" class="form-control" required><br>
+        <input type="text" name="login" placeholder="Введите логин" class="form-control" required><br>
+        <input type="text" name="password" placeholder="Введите пароль" class="form-control" required><br>
+        <input name="department" placeholder="Введите отдел" class="form-control"  list="departmentList" required/><br>
+        <input name="position" placeholder="Введите должность" class="form-control"  list="positionList" required/><br>
+        <input type="text" name="email" placeholder="Введите email" class="form-control" required><br>
+        <button type="submit">Зарегестрироваться</button>
+
+        <datalist id="departmentList">
+            <option th:each="el : ${departmentList}" th:value="${el}"/>
+        </datalist>
+
+        <datalist id="positionList">
+            <option th:each="el : ${positionList}" th:value="${el}"/>
+        </datalist>
+    </form>
+    <div th:if="${message}">
+        <br>
+        <h4 th:text="${message}"/>
+    </div>
+
+</main>
+
+
+<footer class="my-5 pt-5 text-muted text-center text-small">
+    <hr>
+    <p>DocWork by Shpagin A.S.</p>
+    <p>
+        <a href="#">Back to top</a>
+    </p>
+</footer>
+</body>
+</html>

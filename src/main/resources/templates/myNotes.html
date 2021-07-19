@@ -19,6 +19,11 @@
     <h3>Архив служебных записок</h3>
     <br>
 
+    <div th:if="${message}">
+        <h4 th:text="${message}"/>
+        <br>
+    </div>
+
 
     <table class="table">
         <thead class="thead-dark">

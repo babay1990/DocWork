@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 @Service
@@ -85,6 +87,19 @@ public class AssignmentService {
         }
 
         return resulAs;
+    }
+
+    //метод сортировки поручений
+    public ArrayList<Assignment> sortList (ArrayList<Assignment> list) {
+        Collections.sort(list, new Comparator<Assignment>() {
+            @Override
+            public int compare(Assignment notes, Assignment t1) {
+                if (notes.getId() == t1.getId()) return 0;
+                else if (notes.getId() < t1.getId()) return 1;
+                else return -1;
+            }
+        });
+        return list;
     }
 
 

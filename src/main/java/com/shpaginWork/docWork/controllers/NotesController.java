@@ -6,7 +6,6 @@ import com.shpaginWork.docWork.models.Users;
 import com.shpaginWork.docWork.repo.NotesRepository;
 import com.shpaginWork.docWork.repo.UsersRepository;
 import com.shpaginWork.docWork.service.NotesService;
-import com.shpaginWork.docWork.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
 
@@ -28,9 +28,6 @@ public class NotesController {
     private CustomUserDetailService userService;
 
     @Autowired
-    private StorageService service;
-
-    @Autowired
     private NotesRepository notesRepository;
 
     @Autowired
@@ -39,6 +36,9 @@ public class NotesController {
     //страница создания служебной зписки
     @GetMapping("/createSZ")
     public String createSZ(Model model) {
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         //передаем на страницу всех пользователей для поиска получателя
         Iterable<Users> block = usersRepository.findAll();
@@ -46,93 +46,29 @@ public class NotesController {
         return "createSZ";
     }
 
+    //создание служебной записки
     @PostMapping("/createSZ")
     public String newSZ (@RequestParam String recipient,
                          @RequestParam String signer, @RequestParam("file") MultipartFile file,
                          @RequestParam String comment, @RequestParam String name1,
                          @RequestParam String name2, @RequestParam String name3,
-                         @RequestParam String name4, @RequestParam String name5) {
+                         @RequestParam String name4, @RequestParam String name5, RedirectAttributes redirectAttributes) {
 
-        Users user = userService.checkUser();
+        String message = notesService.createNote(recipient, signer, file, comment, name1, name2, name3, name4, name5);
 
-        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        service.uploadFile(file, fileName);
-
-        HashMap<String, Boolean> map = new HashMap<>();
-
-        if(!name1.isEmpty()) {
-            map.put(name1, false);
-        }
-
-        if(!name2.isEmpty()) {
-            map.put(name2, false);
-        }
-
-        if(!name3.isEmpty()) {
-            map.put(name3, false);
-        }
-
-        if(!name4.isEmpty()) {
-            map.put(name4, false);
-        }
-
-        if(!name5.isEmpty()) {
-            map.put(name5, false);
-        }
-
-        Notes notes = new Notes(user.getFullName(), signer, recipient, fileName, comment, map, false);
-        notesRepository.save(notes);
-
-        return "redirect:/lk";
+        redirectAttributes.addFlashAttribute("message", message);
+        return "redirect:/createSZ";
     }
 
     // метод архив СЗ
     @GetMapping("/myNotes")
     public String myNotes (Model model) {
-
-        // находим пользователя
-        Users user = userService.checkUser();
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         // лист list будет передан на страницу как список СЗ, в которых присутствует пользователь
-        ArrayList<Notes> list = new ArrayList<>();
-
-        // находим все CЗ и добавляем во временный лист ar
-        ArrayList<Notes> ar = notesService.getList();
-
-        // цикл
-       for(int i = 0; i < ar.size(); i++) {
-           // заполняем лист checks значениями согласовано/не согласовано конкретной СЗ
-           ArrayList<Boolean> checks = new ArrayList<>(ar.get(i).getMap().values());
-
-           // заполняем лист allNames именами согласующих СЗ
-           Set<String> names = ar.get(i).getMap().keySet();
-           ArrayList<String> allNames = new ArrayList<>();
-           for(String key : names) {
-               allNames.add(key);
-           }
-
-           if(user.getFullName().equals(ar.get(i).getSender()) || allNames.contains(user.getFullName())) {
-               list.add(ar.get(i));
-           }
-
-           if(user.getFullName().equals(ar.get(i).getSigner()) && !checks.contains(false)) {
-               list.add(ar.get(i));
-           }
-
-           if(user.getFullName().equals(ar.get(i).getRecipient()) && !checks.contains(false) && ar.get(i).isCheck()) {
-               list.add(ar.get(i));
-           }
-       }
-
-        // отправляем список СЗ, в которых участвует пользователь, на страницу
-        Collections.sort(list, new Comparator<Notes>() {
-            @Override
-            public int compare(Notes notes, Notes t1) {
-                if (notes.getId() == t1.getId()) return 0;
-                else if (notes.getId() < t1.getId()) return 1;
-                else return -1;
-            }
-        });
+        ArrayList<Notes> list = notesService.getNotesListArchive();
         model.addAttribute("list", list);
 
         return "myNotes";
@@ -140,8 +76,12 @@ public class NotesController {
 
     //метод просмотра данных СЗ
     @GetMapping("/notes/{id}")
-    public String notesDetails(@PathVariable(value = "id") Long id, Model model){
+    public String notesDetails(@PathVariable(value = "id") Long id, Model model, RedirectAttributes redirectAttributes){
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
+        Notes note;
         String singerCheckTrue = "Утверждено";
         String singerCheckFalse = "Не утверждено";
         Set<String> nam;
@@ -153,7 +93,16 @@ public class NotesController {
 
         //по переданному id находим СЗ
         Optional<Notes> op = notesRepository.findById(id);
-        Notes note = op.get();
+
+        //если СЗ не находится по значению id, то передаем сообщение пользователю
+        if(op.isPresent()){
+            note = op.get();
+        }
+        else {
+            redirectAttributes.addFlashAttribute("message",
+                    "Произошла ошибка. Обратитесь в службу поддержки.");
+            return "redirect:/myNotes";
+        }
 
 
         // заполняем лист checks значениями согласовано/не согласовано
@@ -211,14 +160,24 @@ public class NotesController {
 
     //метод согласования служебной записки
     @PostMapping(value = "/notes/{id}", params = "checkId")
-    public String checkName(@RequestParam Long newCheck, Model model) {
+    public String checkName(@RequestParam Long newCheck, Model model, RedirectAttributes redirectAttributes) {
 
+        Notes note;
         //находим пользователя
         Users user = userService.checkUser();
 
         //по переданному из формы id находим СЗ
         Optional<Notes> noteOp = notesRepository.findById(newCheck);
-        Notes note = noteOp.get();
+
+        //если СЗ не находится по значению id, то передаем сообщение пользователю
+        if(noteOp.isPresent()){
+            note = noteOp.get();
+        }
+        else {
+            redirectAttributes.addFlashAttribute("message",
+                    "Произошла ошибка. Обратитесь в службу поддержки.");
+            return "redirect:/myNotes";
+        }
 
         // меняем в поле map значение на true (согласовано) по ключу-имени текущего пользователя
         // сохраняем СЗ
@@ -230,14 +189,22 @@ public class NotesController {
 
     //метод подписания служебной записки
     @PostMapping(value = "/notes/{id}", params = "checkSignerId")
-    public String checkSigner(@RequestParam Long newSignerCheck, Model model) {
+    public String checkSigner(@RequestParam Long newSignerCheck, Model model, RedirectAttributes redirectAttributes) {
 
+        Notes note;
         //находим пользователя
         Users user = userService.checkUser();
 
         //по переданному из формы id находим СЗ
         Optional<Notes> noteOp = notesRepository.findById(newSignerCheck);
-        Notes note = noteOp.get();
+        if(noteOp.isPresent()){
+            note = noteOp.get();
+        }
+        else {
+            redirectAttributes.addFlashAttribute("message",
+                    "Произошла ошибка. Обратитесь в службу поддержки.");
+            return "redirect:/myNotes";
+        }
 
         //меняем поле check (утверждено) в СЗ на true и сохраняем СЗ
         note.setCheck(true);
@@ -246,8 +213,12 @@ public class NotesController {
         return "redirect:/myNotes";
     }
 
+    //страница "Мне на согласование"
     @GetMapping("/noteForApproval")
     public String getNoteForApproval(Model model) {
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         Users user = userService.checkUser();
 
@@ -278,12 +249,18 @@ public class NotesController {
                 }
             }
         }
+
+        notesService.sortList(list);
         model.addAttribute("list", list);
         return "noteForApproval";
     }
 
+    //страница "Мне на утверждение"
     @GetMapping("/lastApprove")
     public String getLastApprove(Model model){
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         Users user = userService.checkUser();
 
@@ -304,12 +281,17 @@ public class NotesController {
             }
         }
 
+        notesService.sortList(list);
         model.addAttribute("list", list);
         return "lastApprove";
     }
 
+    //страница "Мне как получателю"
     @GetMapping("/notesToMe")
     public String getNotesToMe(Model model){
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         Users user = userService.checkUser();
 
@@ -328,6 +310,7 @@ public class NotesController {
                 list.add(ar.get(i));
             }
         }
+        notesService.sortList(list);
         model.addAttribute("list", list);
 
         return "notesToMe";

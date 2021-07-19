@@ -11,27 +11,57 @@
 
 <main class="container">
 
-    <div class="form-signin">
-        <form name="f" th:action="@{/perform-login}" method="post">
-            <fieldset>
-                <legend>Войдите</legend>
-                <div th:if="${param.error}" class="alert alert-error">
-                    Неправильные имя и пароль.
-                </div>
-                <div th:if="${param.logout}" class="alert alert-success">
-                    You have been logged out.
-                </div>
-                <label for="user">Имя</label>
-                <input type="text" id="user" name="user"/>
-                <label for="pass">Пароль</label>
-                <input type="password" id="pass" name="pass"/>
-                <input type="checkbox" name="remember-me"/>
-                <div class="form-actions">
-                    <button type="submit" >Войти</button>
-                </div>
-            </fieldset>
-        </form>
+    <div class="row">
+
+        <div class="col m-2">
+            <div class="form-signin">
+                <form name="f" th:action="@{/perform-login}" method="post">
+                    <fieldset>
+                        <legend>Войдите</legend>
+                        <div th:if="${param.error}" class="alert alert-error">
+                            Неправильное имя или пароль.
+                        </div>
+                        <div th:if="${param.logout}" class="alert alert-success">
+                            You have been logged out.
+                        </div>
+                        <label for="user">Имя</label>
+                        <input type="text" id="user" name="user"/>
+                        <label for="pass">Пароль</label>
+                        <input type="password" id="pass" name="pass"/><br>
+                        <div class="form-actions">
+                            <button type="submit" >Войти</button>
+                            <a class="p-2 text-dark" href="/registrationExample">Регистрация</a>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+
+
+        <div class="alert alert-info m-2 col border-dark p-2">
+            <h4 class="text-center">Добро пожаловать в ознакомительную версию приложения DocWork!</h4>
+            <br>
+            <p>Приложение представляет из себя простую версию документооборота, предоставляющую возможность
+                обмениваться сообщениями, создавать поручения, служебные записки и т.п. При разработке использовались следующие технологии:</p>
+            <p>- Java 8;</p>
+            <p>- Spring Boot;</p>
+            <p>- Spring Security;</p>
+            <p>- PostgreSQL;</p>
+            <p>- Thymeleaf;</p>
+            <p>- AmazonAWS API;</p>
+            <p>- JSoup.</p>
+            <br>
+            <h5>Полное описание возможностей приложения доступно по ссылке:</h5>
+            <a class="p-2 text-dark" href="/info">Информация о приложении</a>
+        </div>
+
+
     </div>
+
+
+
+
+
 
 
 </main>

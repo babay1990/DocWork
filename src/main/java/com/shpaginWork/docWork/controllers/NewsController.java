@@ -35,6 +35,9 @@ public class NewsController {
     //главная страница
     @GetMapping("/news")
     public String news(Model model) throws IOException {
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         //Передаем объект Iterable, содержащий все новости, на страницу
         Iterable<News> block = newsRepository.findAll();
@@ -66,6 +69,9 @@ public class NewsController {
     //страница детального описания новости
     @GetMapping("/details/{id}")
     public String details(@PathVariable(value = "id") long id, Model model){
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         if(!newsRepository.existsById(id)) {
             return "redirect:/main";

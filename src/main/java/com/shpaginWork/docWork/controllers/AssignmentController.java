@@ -41,6 +41,9 @@ public class AssignmentController {
     //страница создания поручений
     @GetMapping("/createAssignment")
     public String getCreateAssignment(Model model) {
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         //передаем на страницу всех пользователей для поиска исполнителя
         Iterable<Users> block = usersRepository.findAll();
@@ -66,6 +69,9 @@ public class AssignmentController {
     //страница "поручения мне"
     @GetMapping("/assignmentToMe")
     public String assignmenToMe(Model model) {
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         //находим пользователя
         Users user = userService.checkUser();
@@ -84,6 +90,7 @@ public class AssignmentController {
             }
         }
         //передаем arraylist на страницу
+        assignmentService.sortList(resul);
         model.addAttribute("resul", resul);
         return "assignmentToMe";
     }
@@ -91,6 +98,9 @@ public class AssignmentController {
     //страница "мои поручения"
     @GetMapping("/myAssignment")
     public String myAssignmentt(Model model) {
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         //находим пользователя
         Users user = userService.checkUser();
@@ -107,6 +117,7 @@ public class AssignmentController {
             }
         }
         //передаем arraylist на страницу
+        assignmentService.sortList(resul);
         model.addAttribute("resul", resul);
         return "myAssignment";
     }
@@ -114,6 +125,9 @@ public class AssignmentController {
     // архив поручений пользователя
     @GetMapping("/assignmentArchive")
     public String assignmentArchive(Model model) {
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         //находим пользователя
         Users user = userService.checkUser();
@@ -130,6 +144,7 @@ public class AssignmentController {
             }
         }
         //передаем arraylist на страницу
+        assignmentService.sortList(resul);
         model.addAttribute("resul", resul);
         return "assignmentArchive";
     }
@@ -137,6 +152,9 @@ public class AssignmentController {
     //метод просмотра деталей поручений
     @GetMapping("/assignmentDetails/{id}")
     public String sentMessageDetails(@PathVariable(value = "id") Long id, Model model, RedirectAttributes redirectAttributes){
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
 
         Users user = userService.checkUser();
 
