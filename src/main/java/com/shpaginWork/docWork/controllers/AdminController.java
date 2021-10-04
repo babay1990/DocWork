@@ -19,38 +19,25 @@ import java.util.ArrayList;
 public class AdminController {
 
     @Autowired
-    UsersRepository usersRepository;
+    private UsersRepository usersRepository;
 
     @Autowired
-    NewsRepository newsRepository;
+    private NewsRepository newsRepository;
 
     @Autowired
-    CustomUserDetailService userService;
+    private CustomUserDetailService userService;
 
     //Вход на страницу администратора
     //На ней отображаем количество зарегестрированных пользователей и количество размещенных новостей
     @GetMapping("/admin")
-    public String getAdmin(Model model){
+    public String getAdminInfo(Model model){
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
-
-        //помещаем всех пользователей в arraylist и находим его размер
-        Iterable<Users> all = usersRepository.findAll();
-        ArrayList<Users> ar = new ArrayList<>();
-        all.forEach(ar::add);
-        int usersSize = ar.size();
-
-        //помещаем все новости в arraylist и находим его размер
-        Iterable<News> allNews = newsRepository.findAll();
-        ArrayList<News> arNews = new ArrayList<>();
-        allNews.forEach(arNews::add);
-        int newsSize = arNews.size();
-
-        //передаем на страницу полученные размеры
-        model.addAttribute("usersSize", usersSize);
-        model.addAttribute("newsSize", newsSize);
-
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
+        //передаем на страницу количество пользователей и новостей
+        model.addAttribute("usersSize", usersRepository.findAll().size());
+        model.addAttribute("newsSize", newsRepository.findAll().size());
         return "admin";
     }
 
@@ -61,10 +48,10 @@ public class AdminController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
-        //Передаем объект Iterable, содержащий всех пользователей, на страницу
-        Iterable<Users> block = usersRepository.findAll();
-        model.addAttribute("block", block);
+        //Передаем на страницу всех пользователей
+        model.addAttribute("block", usersRepository.findAll());
         return "adminUsers";
     }
 
@@ -95,8 +82,9 @@ public class AdminController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
-        Iterable<News> block = newsRepository.findAll();
-        model.addAttribute("block", block);
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
+
+        model.addAttribute("block", newsRepository.findAll());
         return "adminNews";
     }
 
@@ -116,6 +104,7 @@ public class AdminController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
         return "addNews";
     }
 
@@ -138,6 +127,7 @@ public class AdminController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         //находим пользователя
         Users user = userService.checkUser();
@@ -147,25 +137,18 @@ public class AdminController {
         return "change";
     }
 
-    //изменение личных данных пользователя
-    @PostMapping("/change")
-    public String changeParam(@RequestParam String name, @RequestParam String patronymic,
-                              @RequestParam String surname, @RequestParam String login,
-                              @RequestParam String password, @RequestParam String email, Model model){
+    //метод поиска по имени
+    @PostMapping(value = "/adminUsers", params = "searchByUserName")
+    public String searchByUserName(@RequestParam String name, Model model){
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
-        //находим пользователя
-        Users user = userService.checkUser();
-
-        //передаем параметры, полученные со страницы и сохраняем измененные данные в базе данных
-        user.setName(name);
-        user.setPatronymic(patronymic);
-        user.setSurname(surname);
-        user.setLogin(login);
-        user.setPassword(password);
-        user.setEmail(email);
-        user.setFullName(name + " " + patronymic + " " + surname);
-        usersRepository.save(user);
-        return "redirect:/lk";
+        ArrayList<Users> resul = userService.searchByUserFullName(name);
+        model.addAttribute("admin", "admin");
+        model.addAttribute("resul", resul);
+        return "resulSearch";
     }
 
 

@@ -16,40 +16,51 @@
 
     <div th:insert="blocks/lkMenu :: lkMenu"></div>
 
-    <h3>Исходящие сообщения</h3>
+    <h3>Архив исходящих писем</h3>
     <br>
 
+    <div th:if="${message}">
+        <h4 th:text="${message}"/>
+        <br>
+    </div>
 
 
     <table class="table">
         <thead class="thead-dark">
         <tr>
             <th scope="col">Номер</th>
-            <th scope="col">Получатель</th>
-            <th scope="col">Тема</th>
-            <th scope="col">Дата</th>
+            <th scope="col">Автор</th>
+            <th scope="col">Подписант</th>
+            <th scope="col">Адресат</th>
+            <th scope="col">Организация</th>
+            <th scope="col">Письмо</th>
+            <th scope="col">Комментарий</th>
 
         </tr>
         </thead>
-        <tbody th:each="doc : ${resul}">
+        <tbody th:each="doc : ${list}">
         <tr>
-            <td><a th:href="'/sentMessageDetails/' + ${doc.id}" th:text="${doc.id}"/></td>
-            <td><a th:href="'/userDetails/' + ${doc.recipient.fullName}" th:text="${doc.recipient.fullName}"/></td>
-            <td th:text="${doc.messageSubject}"/>
-            <td th:text="${doc.date}"/>
+            <td><p th:text="${doc.id}"/></td>
+            <td><a th:href="'/userDetails/' + ${doc.autor}" th:text="${doc.autor}"/></td>
+            <td th:text="${doc.signer}"/>
+            <td th:text="${doc.recipient}"/>
+            <td th:text="${doc.organization}"/>
+            <td><a th:href="'/save/' + ${doc.link}" th:text="${doc.link}"/></td>
+            <td th:text="${doc.comment}"/>
+
+            <td><a th:href="'/sendByEmail/' + ${doc.id}">Отправить по Email</a></td>
+
             <td>
-                <form action="?bar4" method="post">
-                    <button type="submit" name="content" th:value="${doc.content}">Удалить сообщение</button>
+                <form action="?sent" method="post">
+                    <button type="submit" name="id" th:value="${doc.id}">Отправлено почтой</button>
                 </form>
             </td>
+
         </tr>
         </tbody>
     </table>
 
-    <div th:if="${message}">
-        <br>
-        <h4 th:text="${message}"/>
-    </div>
+
 
 
 </main>

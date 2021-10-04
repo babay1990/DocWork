@@ -41,6 +41,18 @@
             <td th:text="${el.department}"/>
             <td th:text="${el.position}"/>
 
+            <td th:if="${admin}">
+                <form action="?deleteUser" method="post">
+                    <button type="submit" name="login" th:value="${el.login}" >Удалить пользователя</button>
+                </form>
+            </td>
+
+            <td th:if="${admin}">
+                <form action="?setAdminRole" method="post">
+                    <button type="submit" name="login" th:value="${el.login}" >Назначить администратором</button>
+                </form>
+            </td>
+
         </tr>
         </tbody>
     </table>

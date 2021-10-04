@@ -34,10 +34,12 @@
 
         <div class="col border border-dark p-2">
             <p class="h5 border border-dark p-2">Вложения:</p>
-            <a th:href="'/' + ${assignment.link}" th:text="${assignment.link}"/>
+            <div th:each="link : ${linkList}">
+                <a th:href="'/save/' + ${link}" th:text="${link}"/>
+            </div>
             <p th:text="'Дата отправки: ' + ${assignment.date}"/>
             <p class="h5 border border-dark p-2">Исполнитель:</p>
-            <p th:text="${assignment.executor}"/>
+            <p th:text="${assignment.executor.fullName}"/>
 
         </div>
 
@@ -67,9 +69,6 @@
                 <div class="col">
                     <button type="submit">Исполнить</button>
                 </div>
-
-
-
         </div>
     </form>
 

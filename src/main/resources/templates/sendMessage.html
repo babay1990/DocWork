@@ -21,13 +21,13 @@
         <h3 class="my-0 mr-md-auto font-weight-normal">Введите данные для отправки сообщения</h3><br>
         <form method="POST" enctype="multipart/form-data" action="/sendMessage">
             <div class="row border-dark p-2">
-                <input name="messageSubject" placeholder="Введите тему сообщения" class="form-control border-dark p-2" required/>
+                <input th:value="${messageSubject}" name="messageSubject" placeholder="Введите тему сообщения" class="form-control border-dark p-2" required/>
             </div>
 
             <div class="row">
 
                 <div class="col border-dark p-2">
-                    <textarea name="content" placeholder="Введите текст сообщения" class="form-control border-dark p-2" rows="10" required></textarea>
+                    <textarea th:text="${content}" name="content" placeholder="Введите текст сообщения" class="form-control border-dark p-2" rows="10" required></textarea>
                 </div>
 
                 <div class="col border-dark p-2">
@@ -40,7 +40,7 @@
                     </div>
 
                     <div class="border border-dark p-2">
-                        <p>Загрузите файл</p><input type="file" name="file"/>
+                        <p>Загрузите файлы</p><input type="file" name="file" multiple/>
                     </div>
                     <br>
                     <div>

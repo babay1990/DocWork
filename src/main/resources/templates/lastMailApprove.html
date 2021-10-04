@@ -16,29 +16,35 @@
 
     <div th:insert="blocks/lkMenu :: lkMenu"></div>
 
-
-    <h3>Внесите изменения в данные</h3><br>
-    <div class="alert alert-info ">
-        <form action="change" method="post">
-            <label>Имя:</label><br>
-            <input th:value="${user.name}" name="name" size="50" required><br><br>
-            <label>Отчество:</label><br>
-            <input th:value="${user.patronymic}" name="patronymic" size="50" required><br><br>
-            <label>Фамилия:</label><br>
-            <input th:value="${user.surname}" name="surname" size="50" required><br><br>
-            <label>Логин:</label><br>
-            <input th:value="${user.login}" name="login" size="50" required><br><br>
-            <label>Пароль:</label><br>
-            <input th:value="${user.password}" name="password" size="50" required><br><br>
-            <label>Email:</label><br>
-            <input th:value="${user.email}" name="email" size="50" required><br><br>
-            <button type="submit">Изменить данные</button>
-
-        </form>
-    </div>
+    <h3>Исходящее письмо на утверждение</h3>
     <br>
 
 
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Номер</th>
+            <th scope="col">Отправитель</th>
+            <th scope="col">Подписант</th>
+            <th scope="col">Адресат</th>
+            <th scope="col">Организация</th>
+            <th scope="col">Письмо</th>
+            <th scope="col">Комментарий</th>
+
+        </tr>
+        </thead>
+        <tbody th:each="doc : ${list}">
+        <tr>
+            <td><a th:href="'/mail/' + ${doc.id}" th:text="${doc.id}"/></td>
+            <td><a th:href="'/userDetails/' + ${doc.autor}" th:text="${doc.autor}"/></td>
+            <td th:text="${doc.signer}"/>
+            <td th:text="${doc.recipient}"/>
+            <td th:text="${doc.organization}"/>
+            <td><a th:href="'/save/' + ${doc.link}" th:text="${doc.link}"/></td>
+            <td th:text="${doc.comment}"/>
+        </tr>
+        </tbody>
+    </table>
 
 
 

@@ -34,20 +34,22 @@ public class AssignmentService {
         return ar;
     }
 
-    public String createAssignment(MultipartFile file, String executor,
+    public String createAssignment(MultipartFile[] files, Users executor,
                                    String assignment, String assignmentSubject) {
         //если файл не пустой, то присваиваем ему имя, сохраняем в amazon S3 и
         //в базу передаем поручение вместе с ссылкой на файл
-        if(!file.isEmpty()){
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            storageService.uploadFile(file, fileName);
+        if(!files[0].isEmpty()){
+            ArrayList<String> fileNames = new ArrayList<>();
+
+            for(MultipartFile file : files){
+                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                storageService.uploadFile(file, fileName);
+                fileNames.add(fileName);
+            }
 
             Users user = userService.checkUser();
-
             Date date = new Date();
-
-            Assignment newAssignment = new Assignment(user.getFullName(), executor, assignment, fileName, date, assignmentSubject);
-
+            Assignment newAssignment = new Assignment(user, executor, assignment, fileNames, date, assignmentSubject);
             assignmentRepository.save(newAssignment);
 
             return "redirect:/lk";
@@ -59,7 +61,7 @@ public class AssignmentService {
 
             Date date = new Date();
 
-            Assignment newAssignment = new Assignment(user.getFullName(), executor, assignment, date, assignmentSubject);
+            Assignment newAssignment = new Assignment(user, executor, assignment, date, assignmentSubject);
 
             assignmentRepository.save(newAssignment);
 
@@ -81,7 +83,7 @@ public class AssignmentService {
         // вносим в лист все поручения, в которых имя пользователя совпадает с именем получателя
         // и отметка о выполнении поручения false
         for (Assignment arA : arAs) {
-            if (arA.getExecutor().equals(user.getFullName()) && !arA.isStatus()) {
+            if (arA.getExecutor().equals(user) && !arA.isStatus()) {
                 resulAs.add(arA);
             }
         }

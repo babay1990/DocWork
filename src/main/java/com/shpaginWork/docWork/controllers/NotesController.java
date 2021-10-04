@@ -39,10 +39,10 @@ public class NotesController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         //передаем на страницу всех пользователей для поиска получателя
-        Iterable<Users> block = usersRepository.findAll();
-        model.addAttribute("block", block);
+        model.addAttribute("block", usersRepository.findAll());
         return "createSZ";
     }
 
@@ -66,10 +66,10 @@ public class NotesController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         // лист list будет передан на страницу как список СЗ, в которых присутствует пользователь
-        ArrayList<Notes> list = notesService.getNotesListArchive();
-        model.addAttribute("list", list);
+        model.addAttribute("list", notesService.getNotesListArchive());
 
         return "myNotes";
     }
@@ -80,6 +80,7 @@ public class NotesController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         Notes note;
         String singerCheckTrue = "Утверждено";
@@ -136,12 +137,16 @@ public class NotesController {
             model.addAttribute("note", note);
             model.addAttribute("names", names);
             model.addAttribute("checks", checkList);
-            model.addAttribute("checker", note.getId());
+
+            for(int i = 0; i < names.size(); i++){
+                if(names.get(i).equals(user.getFullName()) && checkList.get(i).equals("Не согласовано"))
+                    model.addAttribute("checker", note.getId());
+            }
             if(note.isCheck()) model.addAttribute("singerCheck", singerCheckTrue);
             if(!note.isCheck()) model.addAttribute("singerCheck", singerCheckFalse);
         }
 
-        // если имя пользователя совпадаетс именем подписанта,то передаем все значения
+        // если имя пользователя совпадает с именем подписанта,то передаем все значения
         if(user.getFullName().equals(note.getSigner())) {
             model.addAttribute("note", note);
             model.addAttribute("names", names);
@@ -219,6 +224,8 @@ public class NotesController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
+
 
         Users user = userService.checkUser();
 
@@ -261,6 +268,7 @@ public class NotesController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         Users user = userService.checkUser();
 
@@ -292,6 +300,7 @@ public class NotesController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         Users user = userService.checkUser();
 

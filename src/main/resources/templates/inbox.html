@@ -33,7 +33,7 @@
         <tbody th:each="doc : ${resul}">
         <tr>
             <td><a th:href="'/messageDetails/' + ${doc.id}" th:text="${doc.id}"/></td>
-            <td><a th:href="'/userDetails/' + ${doc.sender}" th:text="${doc.sender}"/></td>
+            <td><a th:href="'/userDetails/' + ${doc.sender.fullName}" th:text="${doc.sender.fullName}"/></td>
             <td th:text="${doc.messageSubject}"/>
             <td th:text="${doc.date}"/>
 

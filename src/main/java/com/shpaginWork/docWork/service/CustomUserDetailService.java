@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+import static com.shpaginWork.docWork.enums.Department.CHANCELLERY;
+
 @Service
 public class CustomUserDetailService implements UserDetailsService {
 
@@ -66,13 +68,16 @@ public class CustomUserDetailService implements UserDetailsService {
     //проверка наличия пользователя в базе данных по ФИО
     public boolean checkUserByFullName(String fullname) {
         Users user = usersRepository.findByFullName(fullname);
-        if(user == null) return false;
-        else return true;
+        return user != null;
     }
 
     public boolean isAdmin(){
         Users user = checkUser();
-        if(user.getRole().equals("ADMIN")) return true;
-        else return false;
+        return user.getRole().equals("ADMIN");
+    }
+
+    public boolean isSecretary(){
+        Users user =checkUser();
+        return user.getDepartment() == CHANCELLERY;
     }
 }

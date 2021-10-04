@@ -48,6 +48,11 @@ public class LkController {
     //главная (личный кабинет)
     @GetMapping("/")
     public String main(Model model){
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
+
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         //вычисляем количество непрочитанных сообщений и передаем на страницу
         model.addAttribute("messages", messageService.getInboxListForCurrentUser().size());
@@ -69,6 +74,8 @@ public class LkController {
             model.addAttribute("isAdmin", "Панель администратора");
         }
 
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
+
         //вычисляем количество непрочитанных сообщений и передаем на страницу
         model.addAttribute("messages", messageService.getInboxListForCurrentUser().size());
 
@@ -88,24 +95,26 @@ public class LkController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         //передаем на страницу всех пользователей для поиска получателя
-        Iterable<Users> block = usersRepository.findAll();
-        model.addAttribute("block", block);
+        model.addAttribute("block", usersRepository.findAll());
         return "sendMessage";
     }
 
     //отправка сообщения
     @PostMapping("/sendMessage")
-    public String sendMessage(@RequestParam("file") MultipartFile file, @RequestParam String recipient,
+    public String sendMessage(@RequestParam("file") MultipartFile[] file, @RequestParam String recipient,
                               @RequestParam String content, @RequestParam String messageSubject,
                               RedirectAttributes redirectAttributes) {
 
         if(userService.checkUserByFullName(recipient)){
-            return messageService.sendMessage(file, recipient, content, messageSubject);
+            return messageService.sendMessage(file, usersRepository.findByFullName(recipient), content, messageSubject);
         }
 
         else {
+            redirectAttributes.addFlashAttribute("messageSubject", messageSubject);
+            redirectAttributes.addFlashAttribute("content", content);
             redirectAttributes.addFlashAttribute("message",
                     "Выбранного получателя не существует. Пожалуйста, введите корректные данные.");
             return "redirect:/sendMessage";
@@ -118,6 +127,7 @@ public class LkController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         //находим пользователя
         Users user = userService.checkUser();
@@ -130,7 +140,7 @@ public class LkController {
 
         //вносим в лист resul все документы, в коорых имя пользователя совпадает с именем получателя
         for (Inbox inbox : ar) {
-            if (inbox.getRecipient().equals(user.getFullName())) {
+            if (inbox.getRecipient().equals(user)) {
                 resul.add(inbox);
             }
         }
@@ -147,6 +157,7 @@ public class LkController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         //находим пользователя
         Users user = userService.checkUser();
@@ -159,7 +170,7 @@ public class LkController {
 
         //вносим в отдельный arraylist все документы, в коорых имя пользователя совпадает с именем отправителя
         for (Sent sent : ar) {
-            if (sent.getSender().equals(user.getFullName())) {
+            if (sent.getSender().equals(user)) {
                 resul.add(sent);
             }
         }
@@ -175,6 +186,7 @@ public class LkController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         //Передаем объект Iterable, содержащий всех пользователей, на страницу
         Iterable<Users> block = usersRepository.findAll();
@@ -183,7 +195,7 @@ public class LkController {
     }
 
     //сохарение файла
-    @GetMapping("/{fileName}")
+    @GetMapping("/save/{fileName}")
     public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable String fileName) {
         byte[] data = service.downloadFile(fileName);
         ByteArrayResource resource = new ByteArrayResource(data);
@@ -219,6 +231,7 @@ public class LkController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         Users user = usersRepository.findByFullName(sender);
         if(user == null) {
@@ -238,12 +251,14 @@ public class LkController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         Optional<Inbox> op = inboxRepository.findById(id);
         if(op.isPresent()){
             Inbox message = op.get();
             message.setCheckMessage(true);
             inboxRepository.save(message);
+            model.addAttribute("linkList", message.getLink());
             model.addAttribute("message", message);
             return "messageDetails";
         }
@@ -260,11 +275,13 @@ public class LkController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         Optional<Sent> op = sentRepository.findById(id);
         if(op.isPresent()){
             Sent message = op.get();
             model.addAttribute("message", message);
+            model.addAttribute("linkList", message.getLink());
             return "sentMessageDetails";
         }
         else{
@@ -277,11 +294,14 @@ public class LkController {
     //метод поиска по имени
     @PostMapping(value = "/lkUsers", params = "searchByUserName")
     public String searchByUserName(@RequestParam String name, Model model){
+        if(userService.isAdmin()){
+            model.addAttribute("isAdmin", "Панель администратора");
+        }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         ArrayList<Users> resul = userService.searchByUserFullName(name);
         model.addAttribute("resul", resul);
         return "resulSearch";
     }
-
 }
 

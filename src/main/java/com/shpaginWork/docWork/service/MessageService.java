@@ -60,7 +60,7 @@ public class MessageService {
         //вносим в resul все документы, в которых имя пользователя совпадает с именем получателя
         //и в которых отметка о прочитанном сообщении false
         for (Inbox inbox : ar) {
-            if (inbox.getRecipient().equals(user.getFullName()) && !inbox.isCheckMessage()) {
+            if (inbox.getRecipient().equals(user) && !inbox.isCheckMessage()) {
                 resul.add(inbox);
             }
         }
@@ -69,36 +69,33 @@ public class MessageService {
     }
 
     //метод отправки сообщения
-    public String sendMessage(MultipartFile file, String recipient,
+    public String sendMessage(MultipartFile[] files, Users recipient,
                               String content, String messageSubject) {
 
-        //если файл не пустой, то присваиваем ему имя, сохраняем в amazon S3 и в базе данных
-        //в базу передаем отправителя, получателя, описание сообщения, имя файла и дату отправки
-        if(!file.isEmpty()){
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            service.uploadFile(file, fileName);
+        ArrayList<String> filesNamesList = new ArrayList<>();
+
+        if(!files[0].isEmpty()){
+
+            for(MultipartFile file : files) {
+                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                service.uploadFile(file, fileName);
+                filesNamesList.add(fileName);
+            }
 
             Users user = userService.checkUser();
-
             Date date = new Date();
-
-            Inbox inbox = new Inbox(user.getFullName(), recipient, content, fileName, date, false, messageSubject);
-            Sent sent = new Sent(user.getFullName(), recipient, content, fileName, date, messageSubject);
-
+            Inbox inbox = new Inbox(user, recipient, content, filesNamesList, date, false, messageSubject);
+            Sent sent = new Sent(user, recipient, content, filesNamesList, date, messageSubject);
             inboxRepository.save(inbox);
             sentRepository.save(sent);
-
             return "redirect:/sent";
         }
-        //если файл пустой, то отправляем пользователю сообщение на страницу
+
         else {
-
             Users user = userService.checkUser();
-
             Date date = new Date();
-
-            Inbox inbox = new Inbox(user.getFullName(), recipient, content, date, false, messageSubject);
-            Sent sent = new Sent(user.getFullName(), recipient, content, date, messageSubject);
+            Inbox inbox = new Inbox(user, recipient, content, date, false, messageSubject);
+            Sent sent = new Sent(user, recipient, content, date, messageSubject);
 
             inboxRepository.save(inbox);
             sentRepository.save(sent);

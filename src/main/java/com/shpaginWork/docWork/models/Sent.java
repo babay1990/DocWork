@@ -1,6 +1,7 @@
 package com.shpaginWork.docWork.models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 
 @Entity
@@ -9,7 +10,7 @@ public class Sent {
 
     public Sent(){}
 
-    public Sent(String sender, String recipient, String content, String link, Date date, String messageSubject){
+    public Sent(Users sender, Users recipient, String content, ArrayList<String> link, Date date, String messageSubject){
         this.sender = sender;
         this.recipient = recipient;
         this.content = content;
@@ -18,7 +19,7 @@ public class Sent {
         this.messageSubject = messageSubject;
     }
 
-    public Sent(String sender, String recipient, String content, Date date, String messageSubject){
+    public Sent(Users sender, Users recipient, String content, Date date, String messageSubject){
         this.sender = sender;
         this.recipient = recipient;
         this.content = content;
@@ -30,7 +31,15 @@ public class Sent {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
-    private String sender, recipient, content, link, messageSubject;
+    private String content, messageSubject;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Users sender;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Users recipient;
+
+    private ArrayList<String> link;
     private Date date;
 
     public long getId() {
@@ -41,19 +50,19 @@ public class Sent {
         this.id = id;
     }
 
-    public String getSender() {
+    public Users getSender() {
         return sender;
     }
 
-    public void setSender(String sender) {
+    public void setSender(Users sender) {
         this.sender = sender;
     }
 
-    public String getRecipient() {
+    public Users getRecipient() {
         return recipient;
     }
 
-    public void setRecipient(String recipient) {
+    public void setRecipient(Users recipient) {
         this.recipient = recipient;
     }
 
@@ -65,11 +74,11 @@ public class Sent {
         this.content = content;
     }
 
-    public String getLink() {
+    public ArrayList<String> getLink() {
         return link;
     }
 
-    public void setLink(String link) {
+    public void setLink(ArrayList<String> link) {
         this.link = link;
     }
 

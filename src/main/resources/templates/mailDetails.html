@@ -18,7 +18,7 @@
 
 
     <div class="container">
-        <h3 th:text="'Служебная записка № ' + ${note.id}"/><br>
+        <h3 th:text="'Исходящее письмо № ' + ${note.id}"/><br>
         <div class="row">
 
             <div class="col">
@@ -28,8 +28,8 @@
                 </div>
 
                 <div class="alert-info border border-dark mt-2">
-                    <p class="h4">Отправитель:</p>
-                    <a th:href="'/userDetails/' + ${note.sender}" th:text="${note.sender}"/>
+                    <p class="h4">Автор:</p>
+                    <a th:href="'/userDetails/' + ${note.autor}" th:text="${note.autor}"/>
                 </div>
 
                 <div class="alert-info border border-dark mt-2">

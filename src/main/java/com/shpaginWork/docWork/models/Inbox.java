@@ -1,6 +1,7 @@
 package com.shpaginWork.docWork.models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 
 @Entity
@@ -9,7 +10,7 @@ public class Inbox {
 
     public Inbox(){}
 
-    public Inbox(String sender, String recipient, String content, String link, Date date, boolean checkMessage, String messageSubject){
+    public Inbox(Users sender, Users recipient, String content, ArrayList<String> link, Date date, boolean checkMessage, String messageSubject){
         this.sender = sender;
         this.recipient = recipient;
         this.content = content;
@@ -19,7 +20,7 @@ public class Inbox {
         this.messageSubject = messageSubject;
     }
 
-    public Inbox(String sender, String recipient, String content, Date date, boolean checkMessage, String messageSubject){
+    public Inbox(Users sender, Users recipient, String content, Date date, boolean checkMessage, String messageSubject){
         this.sender = sender;
         this.recipient = recipient;
         this.content = content;
@@ -32,7 +33,15 @@ public class Inbox {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
-    private String sender, recipient, content, link, messageSubject;
+    private String content, messageSubject;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Users sender;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Users recipient;
+
+    private ArrayList<String> link;
     private Date date;
     private boolean checkMessage;
 
@@ -44,19 +53,19 @@ public class Inbox {
         this.id = id;
     }
 
-    public String getSender() {
+    public Users getSender() {
         return sender;
     }
 
-    public void setSender(String sender) {
+    public void setSender(Users sender) {
         this.sender = sender;
     }
 
-    public String getRecipient() {
+    public Users getRecipient() {
         return recipient;
     }
 
-    public void setRecipient(String recipient) {
+    public void setRecipient(Users recipient) {
         this.recipient = recipient;
     }
 
@@ -68,11 +77,11 @@ public class Inbox {
         this.content = content;
     }
 
-    public String getLink() {
+    public ArrayList<String> getLink() {
         return link;
     }
 
-    public void setLink(String link) {
+    public void setLink(ArrayList<String> link) {
         this.link = link;
     }
 

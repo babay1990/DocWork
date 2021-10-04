@@ -19,5 +19,12 @@
         <a class="p-2 text-dark" href="/notesToMe">Мне как получателю</a>
         <a class="p-2 text-dark" href="/myNotes">Архив служебных записок</a>
     </div>
+    <div class="alert alert-info mt-2 border-dark">
+        <a class="p-2 text-dark" href="/createMail">Создать исходящее письмо</a>
+        <a class="p-2 text-dark" href="/mailForApproval">Исходящие на согласование</a>
+        <a class="p-2 text-dark" href="/lastMailApprove">Исходящие на подпись</a>
+        <a class="p-2 text-dark" href="/myMail">Архив писем</a>
+        <a th:if="${isSecretary}" class="p-2 text-dark" href="/mailToSent">Письма на отправку</a>
+    </div>
     <br>
 </div>

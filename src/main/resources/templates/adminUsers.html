@@ -19,6 +19,16 @@
     <h2>Список зарегестрированных пользователей</h2>
     <br>
 
+    <div class="row ml-3">
+        <form action="?searchByUserName" method="post">
+            <div class="row">
+                <div><input type="text" name="name" placeholder="Поиск по ФИО" class="form-control" size="50" required></div><br>
+                <div><button type="submit">Найти</button></div>
+            </div>
+        </form>
+    </div><br>
+
+
     <table class="table">
         <thead class="thead-dark">
         <tr>

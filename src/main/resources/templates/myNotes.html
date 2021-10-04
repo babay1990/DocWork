@@ -43,7 +43,7 @@
             <td><a th:href="'/userDetails/' + ${doc.sender}" th:text="${doc.sender}"/></td>
             <td th:text="${doc.signer}"/>
             <td th:text="${doc.recipient}"/>
-            <td><a th:href="${doc.link}" th:text="${doc.link}"/></td>
+            <td><a th:href="'/save/' + ${doc.link}" th:text="${doc.link}"/></td>
             <td th:text="${doc.comment}"/>
         </tr>
         </tbody>

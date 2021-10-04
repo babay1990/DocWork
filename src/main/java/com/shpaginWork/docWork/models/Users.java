@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Users {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
     private String name;
@@ -21,10 +21,9 @@ public class Users {
     private String password;
     private String role;
     private String email;
+
     private Department department;
     private Position position;
-
-
 
     public Users() {};
 

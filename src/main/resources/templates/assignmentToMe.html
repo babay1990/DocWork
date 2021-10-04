@@ -34,7 +34,7 @@
         <tr>
 
             <td><a th:href="'/assignmentDetails/' + ${doc.id}" th:text="${doc.id}"/></td>
-            <td th:text="${doc.sender}"/>
+            <td th:text="${doc.sender.fullName}"/>
             <td th:text="${doc.assignmentSubject}"/>
             <td th:text="${doc.date}"/>
 

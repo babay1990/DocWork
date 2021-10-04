@@ -15,4 +15,7 @@ public class TechnicalService {
         return false;
     }
 
+    public boolean checkEmail (String email) {
+        return email.contains("@");
+    }
 }

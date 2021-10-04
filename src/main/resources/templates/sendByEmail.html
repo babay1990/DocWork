@@ -18,33 +18,23 @@
 
 
     <div class="border border-dark p-3">
-        <h3 class="my-0 mr-md-auto font-weight-normal">Введите данные для создания поручения</h3><br>
-        <form method="POST" enctype="multipart/form-data" action="/createAssignment">
-            <div class="row border-dark p-2">
-                <input th:value="${assignmentSubject}" name="assignmentSubject" placeholder="Введите тему поручения" class="form-control border-dark p-2" required/>
-            </div>
+        <h3 class="my-0 mr-md-auto font-weight-normal">Введите данные для отправки письма</h3><br>
+        <form method="POST" enctype="multipart/form-data" action="?sendEmail">
 
             <div class="row">
 
                 <div class="col border-dark p-2">
-                    <textarea th:text="${assignment}" name="assignment" placeholder="Введите текст поручения" class="form-control border-dark p-2" rows="10" required></textarea>
-                </div>
-
-                <div class="col border-dark p-2">
 
                     <div class="border-dark p-2">
-                        <input name="executor" placeholder="Введите исполнителя" class="form-control border-dark p-2"  list="names" required/><br>
-                        <datalist id="names">
-                            <option th:each="el : ${block}" th:value="${el.fullName}"/>
-                        </datalist>
+                        <input name="email" placeholder="Введите email получателя" class="form-control border-dark p-2" required/><br>
                     </div>
 
                     <div class="border border-dark p-2">
-                        <p>Загрузите файлы</p><input type="file" name="file" multiple/>
+                        <p>Загрузите подписанное письмо</p><input type="file" name="file" />
                     </div>
                     <br>
                     <div>
-                        <input type="submit" value="Создать поручение" />
+                        <button type="submit">Отправить письмо</button>
                     </div>
                 </div>
 

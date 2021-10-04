@@ -39,6 +39,7 @@ public class RegistrationController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         Department[] departmentList = Department.getList();
         model.addAttribute("departmentList", departmentList);
@@ -74,6 +75,7 @@ public class RegistrationController {
                 return "redirect:/registration";
             }
         }
+
 
         //проверка на наличие цифр в ФИО
         if(technicalService.checkForNumbers(name) || technicalService.checkForNumbers(patronymic) || technicalService.checkForNumbers(surname)){
@@ -158,6 +160,13 @@ public class RegistrationController {
         if(technicalService.checkForNumbers(name) || technicalService.checkForNumbers(patronymic) || technicalService.checkForNumbers(surname)){
             model.addAttribute("message",
                     "Неправильно введено ФИО. ФИО не должно содержать цифр. Попробуйте еще раз!");
+            return "errorPage";
+        }
+
+        //проверка email
+        if(!technicalService.checkEmail(email)){
+            model.addAttribute("message",
+                    "Неправильно введен Email. Попробуйте еще раз!");
             return "errorPage";
         }
 

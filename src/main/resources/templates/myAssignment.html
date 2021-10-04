@@ -36,7 +36,7 @@
         <tbody th:each="doc : ${resul}">
         <tr>
             <td><a th:href="'/assignmentDetails/' + ${doc.id}" th:text="${doc.id}"/></td>
-            <td th:text="${doc.executor}"/>
+            <td th:text="${doc.executor.fullName}"/>
             <td th:text="${doc.assignmentSubject}"/>
             <td th:text="${doc.date}"/>
             <td th:text="${doc.comment}"/>

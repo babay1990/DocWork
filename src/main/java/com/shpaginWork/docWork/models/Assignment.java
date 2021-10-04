@@ -1,25 +1,25 @@
 package com.shpaginWork.docWork.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 
 @Entity
 public class Assignment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
-    private String sender;
-    private String executor;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Users sender;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Users executor;
+
     private String assingment;
     private String assignmentSubject;
-    private String link;
+    private ArrayList<String> link;
     private Date date;
     private String comment;
     private boolean status;
@@ -27,7 +27,7 @@ public class Assignment {
 
     public Assignment() {};
 
-    public Assignment(String sender, String executor, String assingment, String link, Date date, String assignmentSubject) {
+    public Assignment(Users sender, Users executor, String assingment, ArrayList<String> link, Date date, String assignmentSubject) {
         this.sender = sender;
         this.executor = executor;
         this.assingment = assingment;
@@ -36,7 +36,7 @@ public class Assignment {
         this.assignmentSubject = assignmentSubject;
     }
 
-    public Assignment(String sender, String executor, String assingment, Date date, String assignmentSubject) {
+    public Assignment(Users sender, Users executor, String assingment, Date date, String assignmentSubject) {
         this.sender = sender;
         this.executor = executor;
         this.assingment = assingment;
@@ -52,19 +52,19 @@ public class Assignment {
         this.id = id;
     }
 
-    public String getSender() {
+    public Users getSender() {
         return sender;
     }
 
-    public void setSender(String sender) {
+    public void setSender(Users sender) {
         this.sender = sender;
     }
 
-    public String getExecutor() {
+    public Users getExecutor() {
         return executor;
     }
 
-    public void setExecutor(String executor) {
+    public void setExecutor(Users executor) {
         this.executor = executor;
     }
 
@@ -76,11 +76,11 @@ public class Assignment {
         this.assingment = assingment;
     }
 
-    public String getLink() {
+    public ArrayList<String> getLink() {
         return link;
     }
 
-    public void setLink(String link) {
+    public void setLink(ArrayList<String> link) {
         this.link = link;
     }
 

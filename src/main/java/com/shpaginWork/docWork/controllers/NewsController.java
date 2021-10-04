@@ -38,6 +38,7 @@ public class NewsController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         //Передаем объект Iterable, содержащий все новости, на страницу
         Iterable<News> block = newsRepository.findAll();
@@ -72,6 +73,7 @@ public class NewsController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         if(!newsRepository.existsById(id)) {
             return "redirect:/main";

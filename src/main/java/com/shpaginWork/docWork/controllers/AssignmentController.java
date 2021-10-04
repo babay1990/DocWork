@@ -44,27 +44,27 @@ public class AssignmentController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
-
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
         //передаем на страницу всех пользователей для поиска исполнителя
-        Iterable<Users> block = usersRepository.findAll();
-        model.addAttribute("block", block);
+        model.addAttribute("block", usersRepository.findAll());
         return "createAssignment";
     }
 
     //отправка поручения
     @PostMapping("/createAssignment")
-    public String postCreateAssignment(@RequestParam("file") MultipartFile file, @RequestParam String executor,
+    public String postCreateAssignment(@RequestParam("file") MultipartFile[] file, @RequestParam String executor,
                                  @RequestParam String assignment, @RequestParam String assignmentSubject, RedirectAttributes redirectAttributes) {
 
         if(userService.checkUserByFullName(executor))
-        return assignmentService.createAssignment(file, executor, assignment, assignmentSubject);
+        return assignmentService.createAssignment(file, usersRepository.findByFullName(executor), assignment, assignmentSubject);
         else {
+            redirectAttributes.addFlashAttribute("assignmentSubject", assignmentSubject);
+            redirectAttributes.addFlashAttribute("assignment", assignment);
             redirectAttributes.addFlashAttribute("message",
                     "Выбранный исполнитель не существует. Попробуйте снова.");
             return "redirect:/createAssignment";
         }
     }
-
 
     //страница "поручения мне"
     @GetMapping("/assignmentToMe")
@@ -72,7 +72,7 @@ public class AssignmentController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
-
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
         //находим пользователя
         Users user = userService.checkUser();
 
@@ -82,10 +82,9 @@ public class AssignmentController {
         //находим все поручения и добавляем в arraylist
         ArrayList<Assignment> ar = assignmentService.getList();
 
-
         //вносим в отдельный arraylist все поручения, в коорых имя пользователя совпадает с именем получателя
         for (Assignment assignment : ar) {
-            if (assignment.getExecutor().equals(user.getFullName()) && !assignment.isStatus()) {
+            if (assignment.getExecutor().equals(user) && !assignment.isStatus()) {
                 resul.add(assignment);
             }
         }
@@ -101,6 +100,7 @@ public class AssignmentController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         //находим пользователя
         Users user = userService.checkUser();
@@ -112,7 +112,7 @@ public class AssignmentController {
 
         //вносим в отдельный arraylist все поручения, в коорых имя пользователя совпадает с именем отправителя
         for (Assignment assignment : ar) {
-            if (assignment.getSender().equals(user.getFullName())) {
+            if (assignment.getSender().equals(user)) {
                 resul.add(assignment);
             }
         }
@@ -128,7 +128,7 @@ public class AssignmentController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
-
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
         //находим пользователя
         Users user = userService.checkUser();
 
@@ -139,7 +139,7 @@ public class AssignmentController {
 
         //вносим в отдельный arraylist все поручения, в коорых имя пользователя совпадает с именем отправителя
         for (Assignment assignment : ar) {
-            if (assignment.getSender().equals(user.getFullName()) || assignment.getExecutor().equals(user.getFullName())) {
+            if (assignment.getSender().equals(user) || assignment.getExecutor().equals(user)) {
                 resul.add(assignment);
             }
         }
@@ -155,6 +155,7 @@ public class AssignmentController {
         if(userService.isAdmin()){
             model.addAttribute("isAdmin", "Панель администратора");
         }
+        if(userService.isSecretary()) model.addAttribute("isSecretary", "Панель канцелярии");
 
         Users user = userService.checkUser();
 
@@ -162,12 +163,11 @@ public class AssignmentController {
         if(op.isPresent()) {
             Assignment assignment = op.get();
             model.addAttribute("assignment", assignment);
+            model.addAttribute("linkList", assignment.getLink());
 
-            if (user.getFullName().equals(assignment.getExecutor()) && !assignment.isStatus()) {
+            if (user.equals(assignment.getExecutor()) && !assignment.isStatus()) {
                 model.addAttribute("canDone", user);
             }
-
-
             return "assignmentDetails";
         }
         else {
@@ -200,5 +200,4 @@ public class AssignmentController {
             return "redirect:/assignmentArchive";
         }
     }
-
 }
